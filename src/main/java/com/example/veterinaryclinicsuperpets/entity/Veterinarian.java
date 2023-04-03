@@ -44,9 +44,6 @@ public class Veterinarian {
   private String email;
 
   @Column(nullable = false)
-  private String phoneNum;
-
-  @Column(nullable = false)
   private String username;
 
   @Column(nullable = false)
