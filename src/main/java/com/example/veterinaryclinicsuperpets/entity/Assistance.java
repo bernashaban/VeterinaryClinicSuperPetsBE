@@ -1,5 +1,6 @@
 package com.example.veterinaryclinicsuperpets.entity;
 
+import com.example.veterinaryclinicsuperpets.entity.enums.ServiceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,29 +13,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "article")
+@Table(name = "service")
 @Entity
-public class Article {
+public class Assistance {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
-  private String title;
+  private ServiceType serviceType;
 
   @Column(nullable = false)
-  private String description;
+  private String name;
 
   @Column(nullable = false)
-  private String photoUrl;
-
-  @Column(nullable = false)
-  private LocalDateTime additionDate;
+  private Double price;
 }

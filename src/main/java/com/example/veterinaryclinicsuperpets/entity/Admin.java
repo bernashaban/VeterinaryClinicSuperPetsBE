@@ -12,29 +12,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "article")
+@Table(name = "admin")
 @Entity
-public class Article {
+public class Admin {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
-  private String title;
+  private String username;
 
   @Column(nullable = false)
-  private String description;
-
-  @Column(nullable = false)
-  private String photoUrl;
-
-  @Column(nullable = false)
-  private LocalDateTime additionDate;
+  private String password;
 }
