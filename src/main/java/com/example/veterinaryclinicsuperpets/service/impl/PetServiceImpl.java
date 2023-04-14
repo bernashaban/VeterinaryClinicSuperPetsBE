@@ -39,7 +39,20 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public PetResponse update(PetRequest request, Long id) {
-    return null;
+    Pet pet = petRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    if (!request.getName().equals(pet.getName())) {
+      pet.setName(request.getName());
+    }
+    if (request.getAge() != pet.getAge()) {
+      pet.setAge(request.getAge());
+    }
+    if (!request.getOwner().equals(pet.getOwner())) {
+      pet.setOwner(request.getOwner());
+    }
+    if (!request.getType().equals(pet.getType())) {
+      pet.setType(request.getType());
+    }
+    return petMapper.entityToResponse(pet);
   }
 
   @Override
