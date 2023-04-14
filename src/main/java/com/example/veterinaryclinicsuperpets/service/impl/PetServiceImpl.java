@@ -26,7 +26,8 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public Long create(PetRequest request) {
-    return null;
+    Pet pet = petMapper.requestToEntity(request);
+    return petRepository.save(pet).getId();
   }
 
   @Override
