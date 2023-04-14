@@ -32,7 +32,9 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public PetResponse delete(Long id) {
-    return null;
+    Pet pet = petRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    petRepository.delete(pet);
+    return petMapper.entityToResponse(pet);
   }
 
   @Override
