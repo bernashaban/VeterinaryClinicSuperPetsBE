@@ -57,6 +57,7 @@ public class PetServiceImpl implements PetService {
 
   @Override
   public List<PetResponse> getAll() {
-    return null;
+    List<Pet> pets = (List<Pet>) petRepository.findAll();
+    return petMapper.listOfEntitiesToListOfResponses(pets);
   }
 }
