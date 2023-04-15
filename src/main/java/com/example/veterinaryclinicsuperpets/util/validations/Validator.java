@@ -31,6 +31,7 @@ public class Validator {
   }
 
   public static boolean validatePassword(String password) {
+    // Minimum eight characters, at least one letter and one number
     Matcher passwordMatcher = passwordPattern.matcher(password);
     return passwordMatcher.matches();
   }
