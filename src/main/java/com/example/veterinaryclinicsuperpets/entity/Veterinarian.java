@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -48,4 +49,17 @@ public class Veterinarian {
 
   @Column(nullable = false)
   private String password;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Veterinarian that = (Veterinarian) o;
+    return Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(username, that.username);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, email, username);
+  }
 }
