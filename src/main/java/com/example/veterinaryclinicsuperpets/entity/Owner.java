@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,4 +43,17 @@ public class Owner {
 
   @Column(nullable = false)
   private String password;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Owner owner = (Owner) o;
+    return Objects.equals(id, owner.id) && Objects.equals(email, owner.email) && Objects.equals(phoneNum, owner.phoneNum) && Objects.equals(username, owner.username);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, email, phoneNum, username);
+  }
 }
