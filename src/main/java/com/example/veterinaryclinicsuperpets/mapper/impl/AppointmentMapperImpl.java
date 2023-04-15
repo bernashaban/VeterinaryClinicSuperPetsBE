@@ -4,10 +4,12 @@ import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentRequest;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentResponse;
 import com.example.veterinaryclinicsuperpets.entity.Appointment;
 import com.example.veterinaryclinicsuperpets.mapper.AppointmentMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class AppointmentMapperImpl implements AppointmentMapper {
   @Override
   public AppointmentResponse entityToResponse(Appointment entity) {

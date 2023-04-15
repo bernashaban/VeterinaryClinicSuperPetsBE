@@ -4,10 +4,11 @@ import com.example.veterinaryclinicsuperpets.dto.pet.PetRequest;
 import com.example.veterinaryclinicsuperpets.dto.pet.PetResponse;
 import com.example.veterinaryclinicsuperpets.entity.Pet;
 import com.example.veterinaryclinicsuperpets.mapper.PetMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Service
 public class PetMapperImpl implements PetMapper {
   @Override
   public PetResponse entityToResponse(Pet entity) {

@@ -4,10 +4,11 @@ import com.example.veterinaryclinicsuperpets.dto.owner.OwnerRequest;
 import com.example.veterinaryclinicsuperpets.dto.owner.OwnerResponse;
 import com.example.veterinaryclinicsuperpets.entity.Owner;
 import com.example.veterinaryclinicsuperpets.mapper.OwnerMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Service
 public class OwnerMapperImpl implements OwnerMapper {
   @Override
   public OwnerResponse entityToResponse(Owner entity) {

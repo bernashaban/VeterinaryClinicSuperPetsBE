@@ -4,11 +4,13 @@ import com.example.veterinaryclinicsuperpets.dto.article.ArticleRequest;
 import com.example.veterinaryclinicsuperpets.dto.article.ArticleResponse;
 import com.example.veterinaryclinicsuperpets.entity.Article;
 import com.example.veterinaryclinicsuperpets.mapper.ArticleMapper;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ArticleMapperImpl implements ArticleMapper {
   @Override
   public ArticleResponse entityToResponse(Article entity) {

@@ -4,10 +4,11 @@ import com.example.veterinaryclinicsuperpets.dto.assistence.AssistanceRequest;
 import com.example.veterinaryclinicsuperpets.dto.assistence.AssistanceResponse;
 import com.example.veterinaryclinicsuperpets.entity.Assistance;
 import com.example.veterinaryclinicsuperpets.mapper.AssistanceMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Service
 public class AssistanceMapperImpl implements AssistanceMapper {
   @Override
   public AssistanceResponse entityToResponse(Assistance entity) {
