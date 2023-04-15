@@ -32,17 +32,17 @@ public class PetController {
   }
 
   @DeleteMapping("/{id}")
-  public PetResponse deleteCourse(@PathVariable Long id) {
+  public PetResponse deletePet(@PathVariable Long id) {
     return petService.delete(id);
   }
 
   @PostMapping()
-  public Long postCourse(@RequestBody PetRequest request) {
+  public Long postPet(@RequestBody PetRequest request) {
     return petService.create(request);
   }
 
   @PutMapping(value = "/{id}")
-  public PetResponse updateCourse(@RequestBody PetRequest request, @PathVariable Long id) {
+  public PetResponse updatePet(@RequestBody PetRequest request, @PathVariable Long id) {
     return petService.update(request, id);
   }
 }
