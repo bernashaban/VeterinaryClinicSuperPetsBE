@@ -62,7 +62,7 @@ public class OwnerServiceImpl implements OwnerService {
 
   @Override
   public List<OwnerResponse> getAll() {
-    List<Owner> pets = (List<Owner>) ownerRepository.findAll();
-    return ownerMapper.listOfEntitiesToListOfResponses(pets);
+    List<Owner> owners = (List<Owner>) ownerRepository.findAll();
+    return ownerMapper.listOfEntitiesToListOfResponses(owners);
   }
 }
