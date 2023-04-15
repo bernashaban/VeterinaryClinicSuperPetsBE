@@ -7,6 +7,7 @@ import com.example.veterinaryclinicsuperpets.entity.Veterinarian;
 import com.example.veterinaryclinicsuperpets.mapper.VeterinarianMapper;
 import com.example.veterinaryclinicsuperpets.repository.VeterinarianRepository;
 import com.example.veterinaryclinicsuperpets.service.VeterinarianService;
+import com.example.veterinaryclinicsuperpets.util.validations.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,16 @@ public class VeterinarianServiceImpl implements VeterinarianService {
 
   @Override
   public Long create(VeterinarianRequest request) {
+    if (!Validator.validateEmail(request.getEmail())) {
+      throw new IllegalArgumentException("Email is not valid!");
+    }
+    if (Validator.validateUsername(request.getUsername())) {
+      throw new IllegalArgumentException("Username is not valid!");
+    }
+    if (Validator.validatePassword(request.getPassword())) {
+      throw new IllegalArgumentException(
+              "Password is not valid! Minimum eight characters, at least one letter and one number.");
+    }
     Veterinarian veterinarian = veterinarianMapper.requestToEntity(request);
     return veterinarianRepository.save(veterinarian).getId();
   }
@@ -47,6 +58,9 @@ public class VeterinarianServiceImpl implements VeterinarianService {
       vet.setFullName(request.getFullName());
     }
     if (request.getEmail().equals(vet.getEmail())) {
+      if (!Validator.validateEmail(request.getEmail())) {
+        throw new IllegalArgumentException("Email is not valid!");
+      }
       vet.setEmail(request.getEmail());
     }
     if (!request.getBirthDate().equals(vet.getBirthDate())) {
@@ -62,9 +76,16 @@ public class VeterinarianServiceImpl implements VeterinarianService {
       vet.setUniversityInfo(request.getUniversityInfo());
     }
     if (!request.getUsername().equals(vet.getUsername())) {
+      if (Validator.validateUsername(request.getUsername())) {
+        throw new IllegalArgumentException("Username is not valid!");
+      }
       vet.setUsername(request.getUsername());
     }
     if (!request.getPassword().equals(vet.getPassword())) {
+      if (Validator.validatePassword(request.getPassword())) {
+        throw new IllegalArgumentException(
+                "Password is not valid! Minimum eight characters, at least one letter and one number.");
+      }
       vet.setPassword(request.getPassword());
     }
     return veterinarianMapper.entityToResponse(vet);
