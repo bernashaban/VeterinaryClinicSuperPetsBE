@@ -2,7 +2,6 @@ package com.example.veterinaryclinicsuperpets.service.impl;
 
 import com.example.veterinaryclinicsuperpets.dto.pet.PetRequest;
 import com.example.veterinaryclinicsuperpets.dto.pet.PetResponse;
-import com.example.veterinaryclinicsuperpets.entity.Appointment;
 import com.example.veterinaryclinicsuperpets.entity.Pet;
 import com.example.veterinaryclinicsuperpets.mapper.PetMapper;
 import com.example.veterinaryclinicsuperpets.repository.PetRepository;
