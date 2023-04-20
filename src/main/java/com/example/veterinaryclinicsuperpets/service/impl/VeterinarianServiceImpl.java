@@ -30,10 +30,10 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     if (!Validator.validateEmail(request.getEmail())) {
       throw new IllegalArgumentException("Email is not valid!");
     }
-    if (Validator.validateUsername(request.getUsername())) {
+    if (!Validator.validateUsername(request.getUsername())) {
       throw new IllegalArgumentException("Username is not valid!");
     }
-    if (Validator.validatePassword(request.getPassword())) {
+    if (!Validator.validatePassword(request.getPassword())) {
       throw new IllegalArgumentException(
               "Password is not valid! Minimum eight characters, at least one letter and one number.");
     }
@@ -56,7 +56,7 @@ public class VeterinarianServiceImpl implements VeterinarianService {
     if (!request.getFullName().equals(vet.getFullName())) {
       vet.setFullName(request.getFullName());
     }
-    if (request.getEmail().equals(vet.getEmail())) {
+    if (!request.getEmail().equals(vet.getEmail())) {
       if (!Validator.validateEmail(request.getEmail())) {
         throw new IllegalArgumentException("Email is not valid!");
       }
@@ -75,13 +75,13 @@ public class VeterinarianServiceImpl implements VeterinarianService {
       vet.setUniversityInfo(request.getUniversityInfo());
     }
     if (!request.getUsername().equals(vet.getUsername())) {
-      if (Validator.validateUsername(request.getUsername())) {
+      if (!Validator.validateUsername(request.getUsername())) {
         throw new IllegalArgumentException("Username is not valid!");
       }
       vet.setUsername(request.getUsername());
     }
     if (!request.getPassword().equals(vet.getPassword())) {
-      if (Validator.validatePassword(request.getPassword())) {
+      if (!Validator.validatePassword(request.getPassword())) {
         throw new IllegalArgumentException(
                 "Password is not valid! Minimum eight characters, at least one letter and one number.");
       }

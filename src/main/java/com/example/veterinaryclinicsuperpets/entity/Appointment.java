@@ -34,6 +34,6 @@ public class Appointment {
   @Column(nullable = false)
   private LocalDateTime dateTime;
 
-  @Column(nullable = false)
+  @Column
   private String description;
 }

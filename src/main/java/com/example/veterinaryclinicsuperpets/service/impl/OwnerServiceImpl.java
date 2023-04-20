@@ -29,13 +29,13 @@ public class OwnerServiceImpl implements OwnerService {
     if (!Validator.validateEmail(request.getEmail())) {
       throw new IllegalArgumentException("Email is not valid!");
     }
-    if (Validator.validatePhoneNum(request.getPhoneNum())) {
+    if (!Validator.validatePhoneNum(request.getPhoneNum())) {
       throw new IllegalArgumentException("Phone number is not valid! Should start whit '+359'");
     }
-    if (Validator.validateUsername(request.getUsername())) {
+    if (!Validator.validateUsername(request.getUsername())) {
       throw new IllegalArgumentException("Username is not valid!");
     }
-    if (Validator.validatePassword(request.getPassword())) {
+    if (!Validator.validatePassword(request.getPassword())) {
       throw new IllegalArgumentException(
           "Password is not valid! Minimum eight characters, at least one letter and one number.");
     }
@@ -56,7 +56,7 @@ public class OwnerServiceImpl implements OwnerService {
     if (!request.getFullName().equals(owner.getFullName())) {
       owner.setFullName(request.getFullName());
     }
-    if (request.getAddress().equals(owner.getAddress())) {
+    if (!request.getAddress().equals(owner.getAddress())) {
       owner.setAddress(request.getAddress());
     }
     if (!request.getEmail().equals(owner.getEmail())) {
@@ -66,20 +66,20 @@ public class OwnerServiceImpl implements OwnerService {
       owner.setEmail(request.getEmail());
     }
     if (!request.getUsername().equals(owner.getUsername())) {
-      if (Validator.validateUsername(request.getUsername())) {
+      if (!Validator.validateUsername(request.getUsername())) {
         throw new IllegalArgumentException("Username is not valid!");
       }
       owner.setUsername(request.getUsername());
     }
     if (!request.getPassword().equals(owner.getPassword())) {
-      if (Validator.validatePassword(request.getPassword())) {
+      if (!Validator.validatePassword(request.getPassword())) {
         throw new IllegalArgumentException(
             "Password is not valid! Minimum eight characters, at least one letter and one number.");
       }
       owner.setPassword(request.getPassword());
     }
     if (!request.getPhoneNum().equals(owner.getPhoneNum())) {
-      if (Validator.validatePhoneNum(request.getPhoneNum())) {
+      if (!Validator.validatePhoneNum(request.getPhoneNum())) {
         throw new IllegalArgumentException("Phone number is not valid! Should start whit '+359'");
       }
       owner.setPhoneNum(request.getPhoneNum());
