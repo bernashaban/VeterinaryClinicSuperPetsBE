@@ -1,5 +1,6 @@
 package com.example.veterinaryclinicsuperpets.entity;
 
+import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,4 +37,7 @@ public class Appointment {
 
   @Column
   private String description;
+
+  @Column
+  private AppointmentStatus status;
 }
