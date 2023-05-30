@@ -1,6 +1,8 @@
-package com.example.veterinaryclinicsuperpets.security;
+package com.example.veterinaryclinicsuperpets.controller;
 
+import com.example.veterinaryclinicsuperpets.security.AuthenticationRequest;
 import com.example.veterinaryclinicsuperpets.security.AuthenticationResponse;
+import com.example.veterinaryclinicsuperpets.security.AuthenticationService;
 import com.example.veterinaryclinicsuperpets.security.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("user/auth")
 @RequiredArgsConstructor
-public class AuthenticationController {
-
+public class UserAuthController {
   private final AuthenticationService service;
 
   @PostMapping("/register")
