@@ -7,6 +7,7 @@ import com.example.veterinaryclinicsuperpets.mapper.OwnerMapper;
 import com.example.veterinaryclinicsuperpets.repository.OwnerRepository;
 import com.example.veterinaryclinicsuperpets.service.OwnerService;
 import com.example.veterinaryclinicsuperpets.util.validations.Validator;
+import jakarta.xml.bind.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class OwnerServiceImpl implements OwnerService {
   private final OwnerRepository ownerRepository;
   private final OwnerMapper ownerMapper;
+  private final Validator validator;
 
   @Override
   public OwnerResponse getById(Long id) {
@@ -26,19 +28,19 @@ public class OwnerServiceImpl implements OwnerService {
 
   @Override
   public Long create(OwnerRequest request) {
-    if (!Validator.validateEmail(request.getEmail())) {
-      throw new IllegalArgumentException("Email is not valid!");
-    }
-    if (!Validator.validatePhoneNum(request.getPhoneNum())) {
-      throw new IllegalArgumentException("Phone number is not valid! Should start whit '+359'");
-    }
-    if (!Validator.validateUsername(request.getUsername())) {
-      throw new IllegalArgumentException("Username is not valid!");
-    }
-    if (!Validator.validatePassword(request.getPassword())) {
-      throw new IllegalArgumentException(
-          "Password is not valid! Minimum eight characters, at least one letter and one number.");
-    }
+//    if (!Validator.validateEmail(request.getEmail())) {
+//      throw new IllegalArgumentException("Email is not valid!");
+//    }
+//    if (!Validator.validatePhoneNum(request.getPhoneNum())) {
+//      throw new IllegalArgumentException("Phone number is not valid! Should start whit '+359'");
+//    }
+//    if (!Validator.validateUsername(request.getUsername())) {
+//      throw new IllegalArgumentException("Username is not valid!");
+//    }
+//    if (!Validator.validatePassword(request.getPassword())) {
+//      throw new IllegalArgumentException(
+//          "Password is not valid! Minimum eight characters, at least one letter and one number.");
+//    }
     Owner owner = ownerMapper.requestToEntity(request);
     return ownerRepository.save(owner).getId();
   }
@@ -51,7 +53,7 @@ public class OwnerServiceImpl implements OwnerService {
   }
 
   @Override
-  public OwnerResponse update(OwnerRequest request, Long id) {
+  public OwnerResponse update(OwnerRequest request, Long id) throws ValidationException {
     Owner owner = ownerRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     if (!request.getFullName().equals(owner.getFullName())) {
       owner.setFullName(request.getFullName());
@@ -60,26 +62,26 @@ public class OwnerServiceImpl implements OwnerService {
       owner.setAddress(request.getAddress());
     }
     if (!request.getEmail().equals(owner.getEmail())) {
-      if (!Validator.validateEmail(request.getEmail())) {
+      if (!validator.validateEmail(request.getEmail())) {
         throw new IllegalArgumentException("Email is not valid!");
       }
       owner.setEmail(request.getEmail());
     }
     if (!request.getUsername().equals(owner.getUsername())) {
-      if (!Validator.validateUsername(request.getUsername())) {
+      if (!validator.validateUsername(request.getUsername())) {
         throw new IllegalArgumentException("Username is not valid!");
       }
       owner.setUsername(request.getUsername());
     }
     if (!request.getPassword().equals(owner.getPassword())) {
-      if (!Validator.validatePassword(request.getPassword())) {
+      if (!validator.validatePassword(request.getPassword())) {
         throw new IllegalArgumentException(
             "Password is not valid! Minimum eight characters, at least one letter and one number.");
       }
       owner.setPassword(request.getPassword());
     }
     if (!request.getPhoneNum().equals(owner.getPhoneNum())) {
-      if (!Validator.validatePhoneNum(request.getPhoneNum())) {
+      if (!validator.validatePhoneNum(request.getPhoneNum())) {
         throw new IllegalArgumentException("Phone number is not valid! Should start whit '+359'");
       }
       owner.setPhoneNum(request.getPhoneNum());

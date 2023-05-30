@@ -7,6 +7,7 @@ import com.example.veterinaryclinicsuperpets.mapper.VeterinarianMapper;
 import com.example.veterinaryclinicsuperpets.repository.VeterinarianRepository;
 import com.example.veterinaryclinicsuperpets.service.VeterinarianService;
 import com.example.veterinaryclinicsuperpets.util.validations.Validator;
+import jakarta.xml.bind.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class VeterinarianServiceImpl implements VeterinarianService {
   private final VeterinarianRepository veterinarianRepository;
   private final VeterinarianMapper veterinarianMapper;
+  private final Validator validator;
 
   @Override
   public VeterinarianResponse getById(Long id) {
@@ -26,14 +28,14 @@ public class VeterinarianServiceImpl implements VeterinarianService {
   }
 
   @Override
-  public Long create(VeterinarianRequest request) {
-    if (!Validator.validateEmail(request.getEmail())) {
+  public Long create(VeterinarianRequest request) throws ValidationException {
+    if (!validator.validateEmail(request.getEmail())) {
       throw new IllegalArgumentException("Email is not valid!");
     }
-    if (!Validator.validateUsername(request.getUsername())) {
+    if (!validator.validateUsername(request.getUsername())) {
       throw new IllegalArgumentException("Username is not valid!");
     }
-    if (!Validator.validatePassword(request.getPassword())) {
+    if (!validator.validatePassword(request.getPassword())) {
       throw new IllegalArgumentException(
               "Password is not valid! Minimum eight characters, at least one letter and one number.");
     }
@@ -50,14 +52,14 @@ public class VeterinarianServiceImpl implements VeterinarianService {
   }
 
   @Override
-  public VeterinarianResponse update(VeterinarianRequest request, Long id) {
+  public VeterinarianResponse update(VeterinarianRequest request, Long id) throws ValidationException {
     Veterinarian vet =
         veterinarianRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     if (!request.getFullName().equals(vet.getFullName())) {
       vet.setFullName(request.getFullName());
     }
     if (!request.getEmail().equals(vet.getEmail())) {
-      if (!Validator.validateEmail(request.getEmail())) {
+      if (!validator.validateEmail(request.getEmail())) {
         throw new IllegalArgumentException("Email is not valid!");
       }
       vet.setEmail(request.getEmail());
@@ -75,13 +77,13 @@ public class VeterinarianServiceImpl implements VeterinarianService {
       vet.setUniversityInfo(request.getUniversityInfo());
     }
     if (!request.getUsername().equals(vet.getUsername())) {
-      if (!Validator.validateUsername(request.getUsername())) {
+      if (!validator.validateUsername(request.getUsername())) {
         throw new IllegalArgumentException("Username is not valid!");
       }
       vet.setUsername(request.getUsername());
     }
     if (!request.getPassword().equals(vet.getPassword())) {
-      if (!Validator.validatePassword(request.getPassword())) {
+      if (!validator.validatePassword(request.getPassword())) {
         throw new IllegalArgumentException(
                 "Password is not valid! Minimum eight characters, at least one letter and one number.");
       }
