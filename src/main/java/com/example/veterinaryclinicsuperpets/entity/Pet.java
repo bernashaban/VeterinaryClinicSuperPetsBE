@@ -1,8 +1,11 @@
 package com.example.veterinaryclinicsuperpets.entity;
 
+import com.example.veterinaryclinicsuperpets.entity.enums.Gender;
 import com.example.veterinaryclinicsuperpets.entity.enums.PetType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,8 +37,12 @@ public class Pet {
   @Column(nullable = false)
   private int age;
 
-  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private PetType type;
+
+  @Enumerated(EnumType.STRING)
+  private Gender gender;
+
 
   @ManyToOne private Owner owner;
 
