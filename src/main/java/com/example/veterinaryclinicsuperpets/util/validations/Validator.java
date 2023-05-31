@@ -4,10 +4,11 @@ import com.example.veterinaryclinicsuperpets.repository.AdminRepository;
 import com.example.veterinaryclinicsuperpets.repository.OwnerRepository;
 import com.example.veterinaryclinicsuperpets.repository.VeterinarianRepository;
 import jakarta.xml.bind.ValidationException;
-
+import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class Validator {
   private final VeterinarianRepository vetRepository;
   private final OwnerRepository ownerRepository;

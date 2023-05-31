@@ -59,6 +59,9 @@ public class Veterinarian implements UserDetails {
   @Column(nullable = false)
   private String password;
 
+  @Column(nullable = false)
+  private String phoneNum;
+
   @Enumerated(EnumType.STRING)
   private Role role;
 
