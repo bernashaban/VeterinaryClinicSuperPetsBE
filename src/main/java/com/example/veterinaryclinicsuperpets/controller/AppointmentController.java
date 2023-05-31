@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/appointment")
@@ -47,5 +50,10 @@ public class AppointmentController {
   public AppointmentResponse updateAppointment(
       @RequestBody AppointmentRequest request, @PathVariable Long id) {
     return appointmentService.update(request, id);
+  }
+
+  @GetMapping("/{vetId}/{status}")
+  public Map<LocalDate, Set<LocalTime>> getAllFreeDaysAndTimes(@PathVariable Long vetId, @PathVariable String status) {
+    return appointmentService.getAllAppointmentsForAWeekAhead(vetId, status);
   }
 }

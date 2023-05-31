@@ -3,6 +3,8 @@ package com.example.veterinaryclinicsuperpets.entity;
 import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,6 +40,6 @@ public class Appointment {
   @Column
   private String description;
 
-  @Column
+  @Enumerated(EnumType.STRING)
   private AppointmentStatus status;
 }
