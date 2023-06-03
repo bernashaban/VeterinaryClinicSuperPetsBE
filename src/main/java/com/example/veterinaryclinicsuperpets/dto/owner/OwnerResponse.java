@@ -15,4 +15,5 @@ public class OwnerResponse {
   private String phoneNum;
   private String username;
   private String password;
+  private String photoUrl;
 }

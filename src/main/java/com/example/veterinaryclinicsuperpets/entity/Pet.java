@@ -43,7 +43,6 @@ public class Pet {
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
-
   @ManyToOne private Owner owner;
 
   @Override

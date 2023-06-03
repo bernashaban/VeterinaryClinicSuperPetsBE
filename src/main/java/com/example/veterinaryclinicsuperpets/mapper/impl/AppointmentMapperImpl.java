@@ -3,6 +3,7 @@ package com.example.veterinaryclinicsuperpets.mapper.impl;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentRequest;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentResponse;
 import com.example.veterinaryclinicsuperpets.entity.Appointment;
+import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentStatus;
 import com.example.veterinaryclinicsuperpets.mapper.AppointmentMapper;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
     appointmentResponse.setVeterinarian(entity.getVeterinarian());
     appointmentResponse.setDescription(entity.getDescription());
     appointmentResponse.setDateTime(entity.getDateTime());
+    appointmentResponse.setStatus(entity.getStatus());
     return appointmentResponse;
   }
 
@@ -31,6 +33,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
     appointment.setVeterinarian(entityRequest.getVeterinarian());
     appointment.setDescription(entityRequest.getDescription());
     appointment.setDateTime(entityRequest.getDateTime());
+    appointment.setStatus(AppointmentStatus.UPCOMING);
     return appointment;
   }
 
