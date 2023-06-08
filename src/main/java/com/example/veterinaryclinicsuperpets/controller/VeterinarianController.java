@@ -3,6 +3,7 @@ package com.example.veterinaryclinicsuperpets.controller;
 import com.example.veterinaryclinicsuperpets.dto.veterinarian.VeterinarianRequest;
 import com.example.veterinaryclinicsuperpets.dto.veterinarian.VeterinarianResponse;
 import com.example.veterinaryclinicsuperpets.service.VeterinarianService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.ValidationException;
 import java.util.List;
 
 @RestController
@@ -39,13 +41,13 @@ public class VeterinarianController {
   }
 
   @PostMapping()
-  public Long postVeterinarian(@RequestBody VeterinarianRequest request) {
+  public Long postVeterinarian(@RequestBody VeterinarianRequest request) throws ValidationException {
     return vetService.create(request);
   }
 
   @PutMapping(value = "/{id}")
   public VeterinarianResponse updateVeterinarian(
-      @RequestBody VeterinarianRequest request, @PathVariable Long id) {
+      @RequestBody VeterinarianRequest request, @PathVariable Long id) throws ValidationException {
     return vetService.update(request, id);
   }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.ValidationException;
 import java.util.List;
 
 @RestController
@@ -45,6 +46,12 @@ public class OwnerController {
 
   @PutMapping(value = "/{id}")
   public OwnerResponse updateOwner(@RequestBody OwnerRequest request, @PathVariable Long id) {
-    return ownerService.update(request, id);
+    try {
+      return ownerService.update(request, id);
+    } catch (ValidationException e) {
+      //throw new RuntimeException(e);
+      //log an error
+      return null;
+    }
   }
 }

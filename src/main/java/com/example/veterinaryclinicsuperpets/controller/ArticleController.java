@@ -4,6 +4,7 @@ import com.example.veterinaryclinicsuperpets.dto.article.ArticleRequest;
 import com.example.veterinaryclinicsuperpets.dto.article.ArticleResponse;
 import com.example.veterinaryclinicsuperpets.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,7 @@ public class ArticleController {
   public ArticleResponse deleteArticle(@PathVariable Long id) {
     return articleService.delete(id);
   }
-
+ // @PreAuthorize("hasRole('VET') or hasRole('ADMIN')")
   @PostMapping()
   public Long postArticle(@RequestBody ArticleRequest request) {
     return articleService.create(request);

@@ -3,6 +3,7 @@ package com.example.veterinaryclinicsuperpets.service;
 import com.example.veterinaryclinicsuperpets.dto.owner.OwnerRequest;
 import com.example.veterinaryclinicsuperpets.dto.owner.OwnerResponse;
 
+import javax.validation.ValidationException;
 import java.util.List;
 
 public interface OwnerService {
@@ -12,7 +13,7 @@ public interface OwnerService {
 
     OwnerResponse delete(Long id);
 
-    OwnerResponse update(OwnerRequest request, Long id);
+    OwnerResponse update(OwnerRequest request, Long id) throws ValidationException;
 
     List<OwnerResponse> getAll();
 }

@@ -26,7 +26,7 @@ import java.util.TreeSet;
 @Service
 @AllArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
-  // todo make a method or cron job that changes
+  //todo make a method or cron job that changes
   // the status of every appointment that is passed
   private final AppointmentRepository appointmentRepository;
   private final AppointmentMapper appointmentMapper;
@@ -83,67 +83,68 @@ public class AppointmentServiceImpl implements AppointmentService {
   @Override
   public Map<LocalDate, Set<LocalTime>> getAllAppointmentsForAWeekAhead(
       Long id, String appointmentStatus) {
-    // взимаме всички обекти - запазени часове
-    List<AppointmentResponse> reservedAppointments =
-        getAllAppointmentsByVetIdAndStatus(id, AppointmentStatus.valueOf(appointmentStatus));
-    // мап, в който ще парснем инфото от обектите
-    // датата е уникален елемент в мапа - ключ, от него може да има само един с тази стойност
-    // всяка дата пази лист с часове, които вече някой потребител е запазил
-    Map<LocalDate, Set<LocalTime>> reservedMap = new HashMap<>();
-    // взимаме един по един датата и часа за всеки обект
-    // проверяваме дали текущата дата вече не е запазена в мапа
-    // ако я има вече запазена, вземаме сета и, и запазваме часа
-    // не проверяваме дани вече има такъв час в сета,
-    // понеже и при него запазваните стойности са уникални
-    // ако текущата дата не съществува в мапа, се добавя
-    // заедно с нов хашсет
-    for (AppointmentResponse reservedAppointment : reservedAppointments) {
-      LocalDate currentDate = reservedAppointment.getDateTime().toLocalDate();
-      LocalTime currentTime = reservedAppointment.getDateTime().toLocalTime();
-      if (reservedMap.containsKey(currentDate)) {
-        reservedMap.get(currentDate).add(currentTime);
-      } else {
-        reservedMap.put(currentDate, new HashSet<>());
-        reservedMap.get(currentDate).add(currentTime);
-      }
-    }
+//    // взимаме всички обекти - запазени часове
+//    List<AppointmentResponse> reservedAppointments =
+//        getAllAppointmentsByVetIdAndStatus(id, AppointmentStatus.valueOf(appointmentStatus));
+//    // мап, в който ще парснем инфото от обектите
+//    // датата е уникален елемент в мапа - ключ, от него може да има само един с тази стойност
+//    // всяка дата пази лист с часове, които вече някой потребител е запазил
+//    Map<LocalDate, Set<LocalTime>> reservedMap = new HashMap<>();
+//    // взимаме един по един датата и часа за всеки обект
+//    // проверяваме дали текущата дата вече не е запазена в мапа
+//    // ако я има вече запазена, вземаме сета и, и запазваме часа
+//    // не проверяваме дани вече има такъв час в сета,
+//    // понеже и при него запазваните стойности са уникални
+//    // ако текущата дата не съществува в мапа, се добавя
+//    // заедно с нов хашсет
+//    for (AppointmentResponse reservedAppointment : reservedAppointments) {
+//      LocalDate currentDate = reservedAppointment.getDateTime().toLocalDate();
+//      LocalTime currentTime = reservedAppointment.getDateTime().toLocalTime();
+//      if (reservedMap.containsKey(currentDate)) {
+//        reservedMap.get(currentDate).add(currentTime);
+//      } else {
+//        reservedMap.put(currentDate, new HashSet<>());
+//        reservedMap.get(currentDate).add(currentTime);
+//      }
+//    }
+//
+//    // правим по същия начин мап с ключ дати и сет с часове
+//    // за всички възможни свободни часове за 1 седмица напред
+//    Map<LocalDate, Set<LocalTime>> allPossibleAppointmentsMap = new LinkedHashMap<>();
+//    // вземаме датите
+//    List<LocalDate> listOfAllDates = getWeekOfDaysFromToday();
+//    // вземаме часовете
+//    Set<LocalTime> listOfAllTimes = getAllHoursForAppointments();
+//    // добавяме сета с часове като стойност(value) за всяка дата
+//    for (LocalDate localDate : listOfAllDates) {
+//      allPossibleAppointmentsMap.put(localDate, listOfAllTimes);
+//    }
+//    // за всяка дата взимаме листа със свободни часове
+//    // обхождаме всеки лист и ако същия час го има
+//    // в списъка с запазените часове, го изтриваме от
+//    // списъка със свободните
+//
+//    // всяко ентри си има дата - ключ и валуе - лист от часове
+//    // allPossibleAppointmentsMap - съдържа всички възможни часове за всяка от датите
+//    allPossibleAppointmentsMap.forEach(
+//        (date, value) -> {
+//          if (reservedMap.containsKey(date)) {
+//            Set<LocalTime> reservedValues = new TreeSet<>(reservedMap.get(date));
+//            Set<LocalTime> updatedValue = createNewSetWithReservedValues(value, reservedValues);
+//            allPossibleAppointmentsMap.put(date, updatedValue);
+//          }
+//        });
 
-    // правим по същия начин мап с ключ дати и сет с часове
-    // за всички възможни свободни часове за 1 седмица напред
-    Map<LocalDate, Set<LocalTime>> allPossibleAppointmentsMap = new LinkedHashMap<>();
-    // вземаме датите
-    List<LocalDate> listOfAllDates = getWeekOfDaysFromToday();
-    // вземаме часовете
-    Set<LocalTime> listOfAllTimes = getAllHoursForAppointments();
-    // добавяме сета с часове като стойност(value) за всяка дата
-    for (LocalDate localDate : listOfAllDates) {
-      allPossibleAppointmentsMap.put(localDate, listOfAllTimes);
-    }
-    // за всяка дата взимаме листа със свободни часове
-    // обхождаме всеки лист и ако същия час го има
-    // в списъка с запазените часове, го изтриваме от
-    // списъка със свободните
-
-    // всяко ентри си има дата - ключ и валуе - лист от часове
-    // allPossibleAppointmentsMap - съдържа всички възможни часове за всяка от датите
-    allPossibleAppointmentsMap.forEach(
-        (date, value) -> {
-          if (reservedMap.containsKey(date)) {
-            Set<LocalTime> reservedValues = new TreeSet<>(reservedMap.get(date));
-            Set<LocalTime> updatedValue = createNewSetWithReservedValues(value, reservedValues);
-            allPossibleAppointmentsMap.put(date, updatedValue);
-          }
-        });
-
-    return allPossibleAppointmentsMap;
+   // return allPossibleAppointmentsMap;
+    return new HashMap<>();
   }
 
-  private List<AppointmentResponse> getAllAppointmentsByVetIdAndStatus(
-          Long id, AppointmentStatus appointmentStatus) {
-    List<Appointment> appointments =
-            appointmentRepository.findAllByVeterinarianIdAndStatus(id, appointmentStatus);
-    return appointmentMapper.listOfEntitiesToListOfResponses(appointments.stream().toList());
-  }
+//  private List<AppointmentResponse> getAllAppointmentsByVetIdAndStatus(
+//          Long id, AppointmentStatus appointmentStatus) {
+//    List<Appointment> appointments =
+//            appointmentRepository.findAllByVeterinarianIdAndStatus(id, appointmentStatus);
+//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments.stream().toList());
+//  }
 
   private Set<LocalTime> createNewSetWithReservedValues(
       Set<LocalTime> originalSet, Set<LocalTime> reservedValues) {

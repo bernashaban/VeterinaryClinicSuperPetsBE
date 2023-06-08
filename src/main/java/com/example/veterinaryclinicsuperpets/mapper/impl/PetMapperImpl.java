@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Service
 public class PetMapperImpl implements PetMapper {
+  private final String MALE_ABBREVIATION = "М";
+  private final String FEMALE_ABBREVIATION = "Ж";
+  private final String CAT_ABBREVIATION = "КОТКА";
+  private final String DOG_ABBREVIATION = "КУЧЕ";
+  private final String RABBIT_ABBREVIATION = "ЗАЕК";
+  private final String OTHER_ABBREVIATION = "ДРУГИ";
   @Override
   public PetResponse entityToResponse(Pet entity) {
     PetResponse petResponse = new PetResponse();

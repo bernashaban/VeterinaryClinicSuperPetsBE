@@ -3,8 +3,9 @@ package com.example.veterinaryclinicsuperpets.util.validations;
 import com.example.veterinaryclinicsuperpets.repository.AdminRepository;
 import com.example.veterinaryclinicsuperpets.repository.OwnerRepository;
 import com.example.veterinaryclinicsuperpets.repository.VeterinarianRepository;
-import jakarta.xml.bind.ValidationException;
 import org.springframework.stereotype.Service;
+
+import javax.validation.ValidationException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

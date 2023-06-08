@@ -1,15 +1,14 @@
-package com.example.veterinaryclinicsuperpets.security;
+package com.example.veterinaryclinicsuperpets.controller;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+@AllArgsConstructor
+public class UserCredentials {
     private String username;
     private String password;
+
 }

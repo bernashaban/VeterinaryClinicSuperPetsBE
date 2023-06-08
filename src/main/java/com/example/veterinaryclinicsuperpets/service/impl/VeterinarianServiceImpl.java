@@ -7,10 +7,10 @@ import com.example.veterinaryclinicsuperpets.mapper.VeterinarianMapper;
 import com.example.veterinaryclinicsuperpets.repository.VeterinarianRepository;
 import com.example.veterinaryclinicsuperpets.service.VeterinarianService;
 import com.example.veterinaryclinicsuperpets.util.validations.Validator;
-import jakarta.xml.bind.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ValidationException;
 import java.util.List;
 
 @Service

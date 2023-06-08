@@ -1,29 +1,21 @@
 package com.example.veterinaryclinicsuperpets.entity;
 
-import com.example.veterinaryclinicsuperpets.entity.enums.Gender;
-import com.example.veterinaryclinicsuperpets.entity.enums.PetType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
 @Table(name = "pet")
 @Entity
 public class Pet {
@@ -37,13 +29,16 @@ public class Pet {
   @Column(nullable = false)
   private int age;
 
-  @Enumerated(EnumType.STRING)
-  private PetType type;
+  //1-MALE, 2-FEMALE
+  private int type;
 
-  @Enumerated(EnumType.STRING)
-  private Gender gender;
-
-  @ManyToOne private Owner owner;
+  //  CAT - 1
+  //  DOG - 2
+  //  RABBIT - 3
+  //  OTHER - 4
+  private int gender;
+  @ManyToOne
+  private Owner owner;
 
   @Override
   public boolean equals(Object o) {

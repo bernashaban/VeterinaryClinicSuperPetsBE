@@ -48,9 +48,9 @@ public class PetServiceImpl implements PetService {
     if (!request.getOwner().equals(pet.getOwner())) {
       pet.setOwner(request.getOwner());
     }
-    if (!request.getType().equals(pet.getType())) {
+    //if (!request.getType().equals(pet.getType())) {
       pet.setType(request.getType());
-    }
+    //}
     return petMapper.entityToResponse(pet);
   }
 
