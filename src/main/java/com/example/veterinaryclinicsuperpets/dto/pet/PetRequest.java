@@ -1,7 +1,7 @@
 package com.example.veterinaryclinicsuperpets.dto.pet;
 
-import com.example.veterinaryclinicsuperpets.entity.Owner;
 
+import com.example.veterinaryclinicsuperpets.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,5 @@ public class PetRequest {
   private int age;
   private int type;
   private int gender;
-  private Owner owner;
+  private User owner;
 }

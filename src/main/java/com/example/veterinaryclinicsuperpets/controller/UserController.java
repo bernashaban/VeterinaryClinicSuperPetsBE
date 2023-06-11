@@ -3,10 +3,8 @@ package com.example.veterinaryclinicsuperpets.controller;
 import com.example.veterinaryclinicsuperpets.common.UserConstant;
 import com.example.veterinaryclinicsuperpets.entity.User;
 import com.example.veterinaryclinicsuperpets.repository.UserRepository;
+import com.example.veterinaryclinicsuperpets.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,8 +20,6 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,11 +31,14 @@ public class UserController {
     private UserRepository repository;
 
     @Autowired
+    private UserServiceImpl service;
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @PostMapping("/join")
+    @PostMapping()
     public String joinGroup(@RequestBody User user) {
-        user.setRoles(UserConstant.DEFAULT_ROLE);//USER
+        user.setRoles(UserConstant.DEFAULT_ROLE);//owner
+        user.setActive(true);
         String encryptedPwd = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPwd);
         repository.save(user);
@@ -92,4 +91,10 @@ public class UserController {
     private User getLoggedInUser(Principal principal) {
         return repository.findByUsername(principal.getName()).get();
     }
+    @GetMapping("/vets")
+    public List<User> getAllVets() {
+        return service.getAllVets();
+    }
+
+
 }

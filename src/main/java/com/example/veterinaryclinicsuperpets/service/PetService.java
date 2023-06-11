@@ -15,4 +15,5 @@ public interface PetService {
   PetResponse update(PetRequest request, Long id);
 
   List<PetResponse> getAll();
+  List<PetResponse> getAllByOwner(Long ownerId);
 }

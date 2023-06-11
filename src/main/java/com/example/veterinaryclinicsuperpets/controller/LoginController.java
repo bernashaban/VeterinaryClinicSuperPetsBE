@@ -1,5 +1,6 @@
 package com.example.veterinaryclinicsuperpets.controller;
 
+import com.example.veterinaryclinicsuperpets.dto.UserCredentials;
 import com.example.veterinaryclinicsuperpets.entity.User;
 import com.example.veterinaryclinicsuperpets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -29,16 +29,16 @@ public class Pet {
   @Column(nullable = false)
   private int age;
 
-  //1-MALE, 2-FEMALE
-  private int type;
-
   //  CAT - 1
   //  DOG - 2
   //  RABBIT - 3
   //  OTHER - 4
+  private int type;
+
+  //1-MALE, 2-FEMALE
   private int gender;
   @ManyToOne
-  private Owner owner;
+  private User owner;
 
   @Override
   public boolean equals(Object o) {

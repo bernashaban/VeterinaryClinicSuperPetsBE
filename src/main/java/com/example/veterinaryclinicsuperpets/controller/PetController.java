@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/pet")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+@CrossOrigin()
 public class PetController {
   private final PetService petService;
 
@@ -32,6 +32,11 @@ public class PetController {
   @GetMapping()
   public List<PetResponse> getAllPets() {
     return petService.getAll();
+  }
+
+  @GetMapping("/pets/{ownerId}")
+  public List<PetResponse> getAllPetsByOwner(@PathVariable Long ownerId) {
+    return petService.getAllByOwner(ownerId);
   }
 
   @DeleteMapping("/{id}")

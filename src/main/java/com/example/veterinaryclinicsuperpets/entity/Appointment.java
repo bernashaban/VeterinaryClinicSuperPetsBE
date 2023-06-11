@@ -31,9 +31,9 @@ public class Appointment {
   private Long id;
 
   @ManyToOne
-  private Owner owner;
+  private User owner;
   @ManyToOne private Pet pet;
-  @ManyToOne private Veterinarian veterinarian;
+  @ManyToOne private User veterinarian;
 
   @Column(nullable = false)
   private LocalDateTime dateTime;

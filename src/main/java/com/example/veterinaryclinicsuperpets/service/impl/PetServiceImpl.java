@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -58,5 +59,12 @@ public class PetServiceImpl implements PetService {
   public List<PetResponse> getAll() {
     List<Pet> pets = (List<Pet>) petRepository.findAll();
     return petMapper.listOfEntitiesToListOfResponses(pets);
+  }
+
+  @Override
+  public List<PetResponse> getAllByOwner(Long ownerId) {
+    List<Pet> pets = (List<Pet>) petRepository.findAll();
+    List<Pet> filtered = pets.stream().filter(pet -> pet.getOwner().getId().equals(ownerId)).collect(Collectors.toList());
+    return petMapper.listOfEntitiesToListOfResponses(filtered);
   }
 }
