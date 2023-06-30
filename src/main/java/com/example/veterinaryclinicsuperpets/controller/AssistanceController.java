@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/assistance")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+@CrossOrigin
 public class AssistanceController {
   private final AssistanceService assistanceService;
 
@@ -43,7 +43,7 @@ public class AssistanceController {
     return assistanceService.create(request);
   }
 
-  @PutMapping(value = "/{id}")
+  @PutMapping( "/{id}")
   public AssistanceResponse updateAssistance(
       @RequestBody AssistanceRequest request, @PathVariable Long id) {
     return assistanceService.update(request, id);

@@ -33,9 +33,11 @@ public class Pet {
   //  DOG - 2
   //  RABBIT - 3
   //  OTHER - 4
+  @Column()
   private int type;
 
   //1-MALE, 2-FEMALE
+  @Column()
   private int gender;
   @ManyToOne
   private User owner;

@@ -18,6 +18,9 @@ public interface AppointmentService {
   AppointmentResponse update(AppointmentRequest request, Long id);
 
   List<AppointmentResponse> getAll();
+  List<AppointmentResponse> getAllByOwner(Long ownerId, String status);
+  List<AppointmentResponse> getAllByVet(Long vetId, String status);
+  List<AppointmentResponse> getAllByWaitingForDescription(Long vetId, String status);
 
-  Map<LocalDate, Set<LocalTime>> getAllAppointmentsForAWeekAhead(Long id, String appointmentStatus);
+  List<LocalTime> getAllFreeTimeSlotsForDateAndVet(Long vetId, LocalDate date);
 }

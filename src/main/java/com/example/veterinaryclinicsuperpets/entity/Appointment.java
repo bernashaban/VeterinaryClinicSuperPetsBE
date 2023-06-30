@@ -1,6 +1,7 @@
 package com.example.veterinaryclinicsuperpets.entity;
 
 import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentStatus;
+import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -33,14 +34,20 @@ public class Appointment {
   @ManyToOne
   private User owner;
   @ManyToOne private Pet pet;
-  @ManyToOne private User veterinarian;
+  @ManyToOne private User vet;
 
   @Column(nullable = false)
-  private LocalDateTime dateTime;
+  private LocalDate date;
 
   @Column
   private String description;
 
+  @Column
+  private int duration;
+
   @Enumerated(EnumType.STRING)
   private AppointmentStatus status;
+
+  @Enumerated(EnumType.STRING)
+  private AppointmentType type;
 }

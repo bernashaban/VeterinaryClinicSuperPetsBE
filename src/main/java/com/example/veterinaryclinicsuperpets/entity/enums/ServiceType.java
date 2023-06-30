@@ -5,7 +5,6 @@ public enum ServiceType {
   PREVENTIVE, // Профилактични
   MANIPULATIONS, // Манипулации
   RESEARCH, // Изследвания
-  PACKAGED_SERVICES, // Пакетни услуги
   CASTRATIONS, // Кастрации
   ULTRASOUND, // Ехография
   SURGERY, // Хирургия

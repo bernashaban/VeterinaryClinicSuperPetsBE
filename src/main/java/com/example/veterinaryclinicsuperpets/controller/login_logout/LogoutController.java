@@ -1,4 +1,4 @@
-package com.example.veterinaryclinicsuperpets.controller;
+package com.example.veterinaryclinicsuperpets.controller.login_logout;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

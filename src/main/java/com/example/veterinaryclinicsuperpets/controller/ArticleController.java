@@ -38,7 +38,6 @@ public class ArticleController {
   public ArticleResponse deleteArticle(@PathVariable Long id) {
     return articleService.delete(id);
   }
- // @PreAuthorize("hasRole('VET') or hasRole('ADMIN')")
   @PostMapping()
   public Long postArticle(@RequestBody ArticleRequest request) {
     return articleService.create(request);

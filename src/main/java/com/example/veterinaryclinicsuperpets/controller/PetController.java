@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -51,6 +53,9 @@ public class PetController {
 
   @PutMapping(value = "/{id}")
   public PetResponse updatePet(@RequestBody PetRequest request, @PathVariable Long id) {
+    LocalTime localTime = LocalTime.of(11,30);
+    localTime.plus(30, ChronoUnit.MINUTES);
     return petService.update(request, id);
   }
+
 }

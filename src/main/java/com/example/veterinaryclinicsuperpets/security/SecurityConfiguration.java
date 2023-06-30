@@ -1,7 +1,6 @@
 package com.example.veterinaryclinicsuperpets.security;
 
 
-import com.example.veterinaryclinicsuperpets.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,18 +26,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http .cors().and().csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .sessionFixation().migrateSession()
                 .invalidSessionUrl("/login")
                 .maximumSessions(1).expiredUrl("/login");
-
-  //      http.cors().and().csrf().disable();
-
-//        http.authorizeRequests().antMatchers("/join").permitAll().and().authorizeRequests()
-//                .antMatchers("/**","/post/**").authenticated().and().httpBasic();
     }
 
     @Bean

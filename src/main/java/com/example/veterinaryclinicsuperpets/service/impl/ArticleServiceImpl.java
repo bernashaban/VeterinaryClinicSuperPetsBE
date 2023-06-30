@@ -39,15 +39,13 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticleResponse update(ArticleRequest request, Long id) {
     Article article = articleRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-    if (!request.getDescription().equals(article.getDescription())) {
+    if (request.getDescription()!=null &&!request.getDescription().equals(article.getDescription())) {
       article.setDescription(request.getDescription());
     }
-    if (request.getTitle().equals(article.getTitle())) {
+    if (request.getTitle()!=null &&!request.getTitle().equals(article.getTitle())) {
       article.setTitle(request.getTitle());
     }
-    if (!request.getPhotoUrl().equals(article.getPhotoUrl())) {
-      article.setPhotoUrl(request.getPhotoUrl());
-    }
+    articleRepository.save(article);
     return articleMapper.entityToResponse(article);
   }
 

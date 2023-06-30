@@ -8,10 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleRequest {
-  // no id
   private String title;
   private String description;
-  private String photoUrl;
-  // not necessary in body, will take the date and time from system
-  // private LocalDateTime additionDate;
 }

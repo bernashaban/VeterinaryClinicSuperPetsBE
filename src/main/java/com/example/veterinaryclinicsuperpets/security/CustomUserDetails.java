@@ -1,4 +1,4 @@
-package com.example.veterinaryclinicsuperpets.service;
+package com.example.veterinaryclinicsuperpets.security;
 
 import com.example.veterinaryclinicsuperpets.entity.User;
 import org.springframework.security.core.GrantedAuthority;

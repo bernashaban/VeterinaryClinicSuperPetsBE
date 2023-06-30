@@ -17,18 +17,14 @@ public class ArticleMapperImpl implements ArticleMapper {
     ArticleResponse articleResponse = new ArticleResponse();
     articleResponse.setId(entity.getId());
     articleResponse.setDescription(entity.getDescription());
-    articleResponse.setAdditionDate(entity.getAdditionDate());
     articleResponse.setTitle(entity.getTitle());
-    articleResponse.setPhotoUrl(entity.getPhotoUrl());
     return articleResponse;
   }
 
   @Override
   public Article requestToEntity(ArticleRequest entityRequest) {
     Article article = new Article();
-    article.setAdditionDate(LocalDateTime.now());
     article.setDescription(entityRequest.getDescription());
-    article.setPhotoUrl(entityRequest.getPhotoUrl());
     article.setTitle(entityRequest.getTitle());
     return article;
   }

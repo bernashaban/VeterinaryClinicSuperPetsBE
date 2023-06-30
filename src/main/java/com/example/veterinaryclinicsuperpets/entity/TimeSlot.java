@@ -11,24 +11,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
-@Table(name = "article")
+@Table(name = "time")
 @Entity
-public class Article {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+public class TimeSlot {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false)
-  private String title;
+    @Column(nullable = false)
+    private Long appointmentId;
 
-  @Column(nullable = false)
-  private String description;
+    @Column(nullable = false)
+    private LocalTime time;
 }

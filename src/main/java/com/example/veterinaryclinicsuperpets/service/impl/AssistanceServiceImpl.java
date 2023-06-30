@@ -43,15 +43,16 @@ public class AssistanceServiceImpl implements AssistanceService {
   public AssistanceResponse update(AssistanceRequest request, Long id) {
     Assistance assistance =
         assistanceRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-    if (!request.getName().equals(assistance.getName())) {
+    if (request.getName()!=null && !request.getName().equals(assistance.getName())) {
       assistance.setName(request.getName());
     }
-    if (request.getServiceType().equals(assistance.getServiceType())) {
+    if (request.getServiceType()!=null  && !request.getServiceType().equals(assistance.getServiceType())) {
       assistance.setServiceType(request.getServiceType());
     }
-    if (!request.getPrice().equals(assistance.getPrice())) {
+    if (request.getPrice()!=null && !request.getPrice().equals(assistance.getPrice())) {
       assistance.setPrice(request.getPrice());
     }
+    assistanceRepository.save(assistance);
     return assistanceMapper.entityToResponse(assistance);
   }
 

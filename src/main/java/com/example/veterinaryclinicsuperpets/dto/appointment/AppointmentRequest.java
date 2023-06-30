@@ -5,11 +5,13 @@ import com.example.veterinaryclinicsuperpets.entity.Pet;
 import com.example.veterinaryclinicsuperpets.entity.User;
 
 
+import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentStatus;
+import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -17,8 +19,11 @@ import java.time.LocalDateTime;
 public class AppointmentRequest {
   private User owner;
   private Pet pet;
-  private User veterinarian;
-  private LocalDateTime dateTime;
+  private User vet;
+  private LocalDate date;
+  private int duration;
+  private AppointmentStatus status;
+  private AppointmentType type;
   private String description;
 
 }

@@ -1,4 +1,4 @@
-package com.example.veterinaryclinicsuperpets.controller;
+package com.example.veterinaryclinicsuperpets.controller.login_logout;
 
 import com.example.veterinaryclinicsuperpets.dto.UserCredentials;
 import com.example.veterinaryclinicsuperpets.entity.User;

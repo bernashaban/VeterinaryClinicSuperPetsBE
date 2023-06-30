@@ -1,6 +1,7 @@
 package com.example.veterinaryclinicsuperpets.controller;
 
 import com.example.veterinaryclinicsuperpets.common.UserConstant;
+import com.example.veterinaryclinicsuperpets.dto.user.UserResponse;
 import com.example.veterinaryclinicsuperpets.entity.User;
 import com.example.veterinaryclinicsuperpets.repository.UserRepository;
 import com.example.veterinaryclinicsuperpets.service.impl.UserServiceImpl;
@@ -23,9 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/user")
-@CrossOrigin
-//@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+@RequestMapping("/user/auth")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UserController {
     @Autowired
     private UserRepository repository;
@@ -92,9 +92,12 @@ public class UserController {
         return repository.findByUsername(principal.getName()).get();
     }
     @GetMapping("/vets")
-    public List<User> getAllVets() {
+    public List<UserResponse> getAllVets() {
         return service.getAllVets();
     }
-
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+         return repository.findById(id).orElse(null);
+    }
 
 }

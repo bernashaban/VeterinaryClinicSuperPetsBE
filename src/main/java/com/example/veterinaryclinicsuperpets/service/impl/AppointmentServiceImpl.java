@@ -3,13 +3,16 @@ package com.example.veterinaryclinicsuperpets.service.impl;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentRequest;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentResponse;
 import com.example.veterinaryclinicsuperpets.entity.Appointment;
+import com.example.veterinaryclinicsuperpets.entity.TimeSlot;
 import com.example.veterinaryclinicsuperpets.entity.enums.AppointmentStatus;
 import com.example.veterinaryclinicsuperpets.mapper.AppointmentMapper;
 import com.example.veterinaryclinicsuperpets.repository.AppointmentRepository;
+import com.example.veterinaryclinicsuperpets.repository.TimeSlotRepository;
 import com.example.veterinaryclinicsuperpets.service.AppointmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -20,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -27,10 +31,11 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
-  //todo make a method or cron job that changes
+  // todo make a method or cron job that changes
   // the status of every appointment that is passed
   private final AppointmentRepository appointmentRepository;
   private final AppointmentMapper appointmentMapper;
+  private final TimeSlotRepository timeRepository;
 
   @Override
   public AppointmentResponse getById(Long id) {
@@ -57,20 +62,20 @@ public class AppointmentServiceImpl implements AppointmentService {
   public AppointmentResponse update(AppointmentRequest request, Long id) {
     Appointment appointment =
         appointmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-    if (!request.getPet().equals(appointment.getPet())) {
-      appointment.setPet(request.getPet());
+    if (!request.getVet().equals(appointment.getVet())) {
+      appointment.setVet(request.getVet());
     }
-    if (request.getOwner() != appointment.getOwner()) {
-      appointment.setOwner(request.getOwner());
+    if (!request.getDate().equals(appointment.getDate())) {
+      appointment.setDate(request.getDate());
+    }
+    if (!request.getType().equals(appointment.getType())) {
+      appointment.setType(request.getType());
+    }
+    if (!request.getStatus().equals(appointment.getStatus())) {
+      appointment.setStatus(request.getStatus());
     }
     if (!request.getDescription().equals(appointment.getDescription())) {
       appointment.setDescription(request.getDescription());
-    }
-    if (!request.getVeterinarian().equals(appointment.getVeterinarian())) {
-      appointment.setVeterinarian(request.getVeterinarian());
-    }
-    if (!request.getDateTime().equals(appointment.getDateTime())) {
-      appointment.setDateTime(request.getDateTime());
     }
     return appointmentMapper.entityToResponse(appointment);
   }
@@ -82,96 +87,115 @@ public class AppointmentServiceImpl implements AppointmentService {
   }
 
   @Override
-  public Map<LocalDate, Set<LocalTime>> getAllAppointmentsForAWeekAhead(
-      Long id, String appointmentStatus) {
-    // взимаме всички обекти - запазени часове
-    List<AppointmentResponse> reservedAppointments =
-        getAllAppointmentsByVetIdAndStatus(id, AppointmentStatus.valueOf(appointmentStatus));
-    // мап, в който ще парснем инфото от обектите
-    // датата е уникален елемент в мапа - ключ, от него може да има само един с тази стойност
-    // всяка дата пази лист с часове, които вече някой потребител е запазил
-    Map<LocalDate, Set<LocalTime>> reservedMap = new HashMap<>();
-    // взимаме един по един датата и часа за всеки обект
-    // проверяваме дали текущата дата вече не е запазена в мапа
-    // ако я има вече запазена, вземаме сета и, и запазваме часа
-    // не проверяваме дани вече има такъв час в сета,
-    // понеже и при него запазваните стойности са уникални
-    // ако текущата дата не съществува в мапа, се добавя
-    // заедно с нов хашсет
-    for (AppointmentResponse reservedAppointment : reservedAppointments) {
-      LocalDate currentDate = reservedAppointment.getDateTime().toLocalDate();
-      LocalTime currentTime = reservedAppointment.getDateTime().toLocalTime();
-      if (reservedMap.containsKey(currentDate)) {
-        reservedMap.get(currentDate).add(currentTime);
-      } else {
-        reservedMap.put(currentDate, new HashSet<>());
-        reservedMap.get(currentDate).add(currentTime);
-      }
-    }
-
-    // правим по същия начин мап с ключ дати и сет с часове
-    // за всички възможни свободни часове за 1 седмица напред
-    Map<LocalDate, Set<LocalTime>> allPossibleAppointmentsMap = new LinkedHashMap<>();
-    // вземаме датите
-    List<LocalDate> listOfAllDates = getWeekOfDaysFromToday();
-    // вземаме часовете
-    Set<LocalTime> listOfAllTimes = getAllHoursForAppointments();
-    // добавяме сета с часове като стойност(value) за всяка дата
-    for (LocalDate localDate : listOfAllDates) {
-      allPossibleAppointmentsMap.put(localDate, listOfAllTimes);
-    }
-    // за всяка дата взимаме листа със свободни часове
-    // обхождаме всеки лист и ако същия час го има
-    // в списъка с запазените часове, го изтриваме от
-    // списъка със свободните
-
-    // всяко ентри си има дата - ключ и валуе - лист от часове
-    // allPossibleAppointmentsMap - съдържа всички възможни часове за всяка от датите
-    allPossibleAppointmentsMap.forEach(
-        (date, value) -> {
-          if (reservedMap.containsKey(date)) {
-            Set<LocalTime> reservedValues = new TreeSet<>(reservedMap.get(date));
-            Set<LocalTime> updatedValue = createNewSetWithReservedValues(value, reservedValues);
-            allPossibleAppointmentsMap.put(date, updatedValue);
-          }
-        });
-
-    return allPossibleAppointmentsMap;
-    //return new HashMap<>();
+  public List<AppointmentResponse> getAllByOwner(Long ownerId, String status) {
+    List<Appointment> appointments = appointmentRepository.findAllByOwnerIdAndStatus(ownerId, AppointmentStatus.valueOf(status));
+    return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
+//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments).stream()
+//        .filter(
+//            appointmentResponse -> Objects.equals(appointmentResponse.getOwner().getId(), ownerId))
+//        .collect(Collectors.toList());
   }
 
-  private List<AppointmentResponse> getAllAppointmentsByVetIdAndStatus(
-          Long id, AppointmentStatus appointmentStatus) {
-    List<Appointment> appointments =
-            appointmentRepository.findAllByVeterinarianIdAndStatus(id, appointmentStatus);
+  @Override
+  public List<AppointmentResponse> getAllByVet(Long vetId, String status) {
+    LocalDate today = LocalDate.now();
+    List<Appointment> appointments;
+    if(status.equals("UPCOMING")){
+     appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status))
+              .stream().filter(appointment -> (appointment.getDate().isAfter(today) || appointment.getDate().equals(today))
+              && appointment.getDescription()==null).collect(Collectors.toList());
+    }else{
+      appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status));
+    }
+
+    return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
+
+//    List<Appointment> appointments = (List<Appointment>) appointmentRepository.findAll();
+//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments).stream()
+//        .filter(appointmentResponse -> Objects.equals(appointmentResponse.getVet().getId(), vetId))
+//        .collect(Collectors.toList());
+  }
+  @Override
+  public List<AppointmentResponse> getAllByWaitingForDescription(Long vetId, String status) {
+    LocalDate today = LocalDate.now();
+    List<Appointment> appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status))
+            .stream().filter(appointment -> appointment.getDate().isBefore(today)
+                    && appointment.getDescription()==null).collect(Collectors.toList());
+    return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
+//    List<Appointment> appointments = (List<Appointment>) appointmentRepository.findAll();
+//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments).stream()
+//        .filter(appointmentResponse -> Objects.equals(appointmentResponse.getVet().getId(), vetId))
+//        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<LocalTime> getAllFreeTimeSlotsForDateAndVet(Long id, LocalDate date) {
+    List<LocalTime> allTimeSlots = getAllTimeSlots();
+    List<AppointmentResponse> allAppointmentsByDateAndVetId = getAllAppointmentsByVetIdAndDate(id, date);
+    List<TimeSlot> reservedTimeSlotsObjList = new ArrayList<>();
+
+    for (AppointmentResponse appointment : allAppointmentsByDateAndVetId) {
+      Long currentId = appointment.getId();
+      reservedTimeSlotsObjList.addAll(timeRepository.findAllByAppointmentId(currentId));
+    }
+
+    List<LocalTime> reservedTimes = new ArrayList<>();
+    reservedTimeSlotsObjList.forEach(element->reservedTimes.add(element.getTime()));
+
+    List<LocalTime> freeTimeSlots = new ArrayList<>();
+    for (LocalTime time : allTimeSlots) {
+      if (!reservedTimes.contains(time)) {
+        freeTimeSlots.add(time);
+      }
+    }
+//    int duration = 0;
+//
+//    if ("REVIEWS".equals(type) || "PREVENTIVE".equals(type)) {
+//      duration = 30;
+//    } else if ("RESEARCH".equals(type) || "DENTISTRY".equals(type)) {
+//      duration = 60;
+//    } else if ("CASTRATIONS".equals(type) || "SURGERY".equals(type)) {
+//      duration = 120;
+//    }
+   // при 30 мин се показват всички часове
+//    if(duration==60){
+      //да не запозва от 11:30 или от 17:30 - най късно 11 или 17
+//      freeTimeSlots.remove(LocalTime.parse("11:30"));
+//      freeTimeSlots.remove(LocalTime.parse("17:30"));
+      //трябва да има 2 последователни свободни
+
+//      for (LocalTime time : freeTimeSlots) {
+//        if(freeTimeSlots.contains(time.plus(30, ChronoUnit.MINUTES)) && freeTimeSlots.contains(time.plus(60, ChronoUnit.MINUTES))){
+          //ако съдържа часа+2 последователни, може да се запази
+//        }else{
+//          freeTimeSlots.remove(time);
+//        }
+//      }
+
+//    }else if(duration == 120){
+      //да не започва от 10:30 или от 16:30 - най късно 10 или 16
+//      freeTimeSlots.remove(LocalTime.parse("10:30"));
+//      freeTimeSlots.remove(LocalTime.parse("11:00"));
+//      freeTimeSlots.remove(LocalTime.parse("11:30"));
+//      freeTimeSlots.remove(LocalTime.parse("16:30"));
+//      freeTimeSlots.remove(LocalTime.parse("17:00"));
+//      freeTimeSlots.remove(LocalTime.parse("17:30"));
+      //трябва да има 4 последователни свободни
+
+
+//    }
+
+    return freeTimeSlots;
+  }
+
+  private List<AppointmentResponse> getAllAppointmentsByVetIdAndDate(Long id, LocalDate date) {
+    List<Appointment> appointments = appointmentRepository.findAllByVetIdAndDate(id, date);
     return appointmentMapper.listOfEntitiesToListOfResponses(new ArrayList<>(appointments));
   }
 
-  private Set<LocalTime> createNewSetWithReservedValues(
-      Set<LocalTime> originalSet, Set<LocalTime> reservedValues) {
-    Set<LocalTime> updatedSet = new TreeSet<>(originalSet);
-    updatedSet.removeAll(reservedValues);
-    return updatedSet;
-  }
-
-  private List<LocalDate> getWeekOfDaysFromToday() {
-    List<LocalDate> aWeekOfDaysFromToday = new ArrayList<>();
-    LocalDate today = LocalDate.now();
-    for (int i = 0; i < 7; i++) {
-      if (i == 0) {
-        aWeekOfDaysFromToday.add(today);
-      } else {
-        LocalDate nextDay = today.plus(i, ChronoUnit.DAYS);
-        aWeekOfDaysFromToday.add(nextDay);
-      }
-    }
-    return aWeekOfDaysFromToday;
-  }
-
-  private Set<LocalTime> getAllHoursForAppointments() {
-    return new TreeSet<>(
+  private List<LocalTime> getAllTimeSlots() {
+    return new ArrayList<>(
         Arrays.asList(
-            LocalTime.parse("09:00:00"),
             LocalTime.parse("09:00:00"),
             LocalTime.parse("09:30:00"),
             LocalTime.parse("10:00:00"),
