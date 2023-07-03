@@ -36,7 +36,20 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Long create(UserRequest request) {
+  public Long create(UserRequest request) throws IllegalArgumentException {
+    User user = userRepository.findByUsername(request.getUsername()).orElse(null);
+    User user2 = userRepository.findByEmail(request.getEmail()).orElse(null);
+    User user3 = userRepository.findByPhoneNum(request.getPhoneNum()).orElse(null);
+    if(user!=null){
+      throw new IllegalArgumentException("Username already exist!");
+    }else if(user2!=null){
+      throw new IllegalArgumentException("Email already exist!");
+    }else if(user3!=null){
+      throw new IllegalArgumentException("Phone number already exist!");
+    }else{
+      User user4 = userMapper.requestToEntity(request);
+      return userRepository.save(user4).getId();
+    }
     //    if (!Validator.validateEmail(request.getEmail())) {
     //      throw new IllegalArgumentException("Email is not valid!");
     //    }
@@ -52,8 +65,6 @@ public class UserServiceImpl implements UserService {
     //          "Password is not valid! Minimum eight characters, at least one letter and one
     // number.");
     //    }
-    User user = userMapper.requestToEntity(request);
-    return userRepository.save(user).getId();
   }
 
   @Override

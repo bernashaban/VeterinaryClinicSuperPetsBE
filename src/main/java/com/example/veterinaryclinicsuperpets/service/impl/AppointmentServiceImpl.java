@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
-  // todo make a method or cron job that changes
-  // the status of every appointment that is passed
   private final AppointmentRepository appointmentRepository;
   private final AppointmentMapper appointmentMapper;
   private final TimeSlotRepository timeRepository;
@@ -47,7 +45,19 @@ public class AppointmentServiceImpl implements AppointmentService {
   @Override
   public Long create(AppointmentRequest request) {
     Appointment appointment = appointmentMapper.requestToEntity(request);
-    return appointmentRepository.save(appointment).getId();
+    Long appointmentId = appointmentRepository.save(appointment).getId();
+    String [] times = request.getTimes();
+    List<LocalTime> parsedTimes = new ArrayList<>();
+    for (String time : times) {
+      parsedTimes.add(LocalTime.parse(time));
+    }
+    for (LocalTime parsedTime : parsedTimes) {
+      TimeSlot timeSlot = new TimeSlot();
+      timeSlot.setAppointmentId(appointmentId);
+      timeSlot.setTime(parsedTime);
+      timeRepository.save(timeSlot);
+    }
+    return appointmentId;
   }
 
   @Override
@@ -77,6 +87,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     if (!request.getDescription().equals(appointment.getDescription())) {
       appointment.setDescription(request.getDescription());
     }
+    appointmentRepository.save(appointment);
+    return appointmentMapper.entityToResponse(appointment);
+  }
+  @Override
+  public AppointmentResponse addDescription(String description, Long id) {
+    Appointment appointment =
+            appointmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    appointment.setDescription(description);
+    appointment.setStatus(AppointmentStatus.PASSED);
+    appointmentRepository.save(appointment);
     return appointmentMapper.entityToResponse(appointment);
   }
 
@@ -90,10 +110,6 @@ public class AppointmentServiceImpl implements AppointmentService {
   public List<AppointmentResponse> getAllByOwner(Long ownerId, String status) {
     List<Appointment> appointments = appointmentRepository.findAllByOwnerIdAndStatus(ownerId, AppointmentStatus.valueOf(status));
     return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
-//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments).stream()
-//        .filter(
-//            appointmentResponse -> Objects.equals(appointmentResponse.getOwner().getId(), ownerId))
-//        .collect(Collectors.toList());
   }
 
   @Override
@@ -107,13 +123,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }else{
       appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status));
     }
-
     return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
-
-//    List<Appointment> appointments = (List<Appointment>) appointmentRepository.findAll();
-//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments).stream()
-//        .filter(appointmentResponse -> Objects.equals(appointmentResponse.getVet().getId(), vetId))
-//        .collect(Collectors.toList());
   }
   @Override
   public List<AppointmentResponse> getAllByWaitingForDescription(Long vetId, String status) {

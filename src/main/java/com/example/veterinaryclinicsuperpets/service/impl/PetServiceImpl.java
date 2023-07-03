@@ -46,12 +46,13 @@ public class PetServiceImpl implements PetService {
     if (request.getAge() != pet.getAge()) {
       pet.setAge(request.getAge());
     }
-    if (!request.getOwner().equals(pet.getOwner())) {
-      pet.setOwner(request.getOwner());
-    }
-    //if (!request.getType().equals(pet.getType())) {
+    if (request.getType() != pet.getType()) {
       pet.setType(request.getType());
-    //}
+    }
+    if (request.getGender() != pet.getGender()) {
+      pet.setGender(request.getGender());
+    }
+    petRepository.save(pet);
     return petMapper.entityToResponse(pet);
   }
 

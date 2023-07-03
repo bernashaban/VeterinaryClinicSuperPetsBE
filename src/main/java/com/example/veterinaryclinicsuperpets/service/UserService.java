@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     UserResponse getById(Long id);
 
-    Long create(UserRequest request);
+    Long create(UserRequest request)  throws IllegalArgumentException ;
 
     UserResponse delete(Long id);
 

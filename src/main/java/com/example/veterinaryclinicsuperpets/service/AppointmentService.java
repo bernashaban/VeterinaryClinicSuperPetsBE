@@ -16,6 +16,7 @@ public interface AppointmentService {
   AppointmentResponse delete(Long id);
 
   AppointmentResponse update(AppointmentRequest request, Long id);
+  AppointmentResponse addDescription(String description, Long id);
 
   List<AppointmentResponse> getAll();
   List<AppointmentResponse> getAllByOwner(Long ownerId, String status);

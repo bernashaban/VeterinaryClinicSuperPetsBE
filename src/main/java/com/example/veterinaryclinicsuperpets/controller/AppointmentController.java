@@ -69,9 +69,15 @@ public class AppointmentController {
       @RequestBody AppointmentRequest request, @PathVariable Long id) {
     return appointmentService.update(request, id);
   }
+  @PutMapping(value = "add-description/{id}")
+  public AppointmentResponse addDescription(
+          @RequestBody String description, @PathVariable Long id) {
+    return appointmentService.addDescription(description, id);
+  }
 
   @GetMapping("/{vetId}/{date}")
-  public List<LocalTime> getAllFreeTimes(@PathVariable Long vetId, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+  public List<LocalTime> getAllFreeTimes(@PathVariable Long vetId,
+                                         @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
     return appointmentService.getAllFreeTimeSlotsForDateAndVet(vetId, date);
   }
 

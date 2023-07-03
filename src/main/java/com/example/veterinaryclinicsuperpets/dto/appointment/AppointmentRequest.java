@@ -21,6 +21,7 @@ public class AppointmentRequest {
   private Pet pet;
   private User vet;
   private LocalDate date;
+  private String[] times;
   private int duration;
   private AppointmentStatus status;
   private AppointmentType type;
