@@ -13,4 +13,5 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
     List<Appointment> findAllByVetIdAndDate(Long Id, LocalDate date);
     List<Appointment> findAllByVetIdAndStatus(Long Id, AppointmentStatus status);
     List<Appointment> findAllByOwnerIdAndStatus(Long Id, AppointmentStatus status);
+    List<Appointment> findAllByPetId(Long Id);
 }

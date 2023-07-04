@@ -5,6 +5,8 @@ import com.example.veterinaryclinicsuperpets.dto.user.UserRequest;
 import com.example.veterinaryclinicsuperpets.dto.user.UserResponse;
 import com.example.veterinaryclinicsuperpets.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class OwnerController {
   public UserResponse getByUsername(@PathVariable String username) {
     return userService.getByUsername(username);
   }
-
   @GetMapping()
+  @Secured("ROLE_ADMIN")
   public List<UserResponse> getAll() {
     return userService.getAll();
   }
@@ -64,15 +65,9 @@ public class OwnerController {
     return userService.create(request);
   }
 
-  @PutMapping(value = "/{id}")
-  public UserResponse update(@RequestBody UserRequest request, @PathVariable Long id) {
-    try {
-      return userService.update(request, id);
-    } catch (ValidationException e) {
-      // throw new RuntimeException(e);
-      // log an error
-      return null;
-    }
+  @PutMapping(value = "/{username}")
+  public UserResponse update(@RequestBody UserRequest request, @PathVariable String username) {
+      return userService.update(request, username);
   }
 
 }

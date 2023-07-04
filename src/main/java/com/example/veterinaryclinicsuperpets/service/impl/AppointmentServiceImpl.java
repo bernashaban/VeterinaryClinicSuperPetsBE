@@ -12,20 +12,12 @@ import com.example.veterinaryclinicsuperpets.service.AppointmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,12 +38,20 @@ public class AppointmentServiceImpl implements AppointmentService {
   public Long create(AppointmentRequest request) {
     Appointment appointment = appointmentMapper.requestToEntity(request);
     Long appointmentId = appointmentRepository.save(appointment).getId();
-    String [] times = request.getTimes();
-    List<LocalTime> parsedTimes = new ArrayList<>();
-    for (String time : times) {
-      parsedTimes.add(LocalTime.parse(time));
+    LocalTime startTime = LocalTime.parse(request.getStartTime());
+    List<LocalTime>localTimeList = new ArrayList<>();
+    if (request.getDuration()==60){
+    localTimeList.add(startTime);
+    localTimeList.add(startTime.plus(30, ChronoUnit.MINUTES));
+    }else if(request.getDuration()==120){
+      localTimeList.add(startTime);
+      localTimeList.add(startTime.plus(30, ChronoUnit.MINUTES));
+      localTimeList.add(startTime.plus(60, ChronoUnit.MINUTES));
+      localTimeList.add(startTime.plus(90, ChronoUnit.MINUTES));
+    }else{
+      localTimeList.add(startTime);
     }
-    for (LocalTime parsedTime : parsedTimes) {
+    for (LocalTime parsedTime : localTimeList) {
       TimeSlot timeSlot = new TimeSlot();
       timeSlot.setAppointmentId(appointmentId);
       timeSlot.setTime(parsedTime);
@@ -65,7 +65,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     Appointment appointment =
         appointmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     appointmentRepository.delete(appointment);
+    List<TimeSlot> timeSlotList = timeRepository.findAllByAppointmentId(id);
+    for (TimeSlot timeSlot : timeSlotList) {
+      TimeSlot current = timeRepository.findById(timeSlot.getId()).orElseThrow(IllegalArgumentException::new);
+      timeRepository.delete(current);
+    }
     return appointmentMapper.entityToResponse(appointment);
+  }
+
+  @Override
+  public void deleteAll(List<AppointmentResponse> appointmentList) {
+    for (AppointmentResponse appointmentResponse : appointmentList) {
+      Appointment appointment = appointmentRepository.findById(appointmentResponse.getId()).orElseThrow(IllegalArgumentException::new);
+      delete(appointment.getId());
+    }
   }
 
   @Override
@@ -90,10 +103,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     appointmentRepository.save(appointment);
     return appointmentMapper.entityToResponse(appointment);
   }
+
   @Override
   public AppointmentResponse addDescription(String description, Long id) {
     Appointment appointment =
-            appointmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        appointmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     appointment.setDescription(description);
     appointment.setStatus(AppointmentStatus.PASSED);
     appointmentRepository.save(appointment);
@@ -105,10 +119,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     List<Appointment> appointments = (List<Appointment>) appointmentRepository.findAll();
     return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
   }
-
+  @Override
+  public List<AppointmentResponse> getAllByPet(Long petId) {
+    List<Appointment> appointments =
+            appointmentRepository.findAllByPetId(petId);
+    return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
+  }
   @Override
   public List<AppointmentResponse> getAllByOwner(Long ownerId, String status) {
-    List<Appointment> appointments = appointmentRepository.findAllByOwnerIdAndStatus(ownerId, AppointmentStatus.valueOf(status));
+    List<Appointment> appointments =
+        appointmentRepository.findAllByOwnerIdAndStatus(ownerId, AppointmentStatus.valueOf(status));
     return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
   }
 
@@ -116,32 +136,43 @@ public class AppointmentServiceImpl implements AppointmentService {
   public List<AppointmentResponse> getAllByVet(Long vetId, String status) {
     LocalDate today = LocalDate.now();
     List<Appointment> appointments;
-    if(status.equals("UPCOMING")){
-     appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status))
-              .stream().filter(appointment -> (appointment.getDate().isAfter(today) || appointment.getDate().equals(today))
-              && appointment.getDescription()==null).collect(Collectors.toList());
-    }else{
-      appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status));
+    if (status.equals("UPCOMING")) {
+      appointments =
+          appointmentRepository
+              .findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status))
+              .stream()
+              .filter(
+                  appointment ->
+                      (appointment.getDate().isAfter(today) || appointment.getDate().equals(today))
+                          && appointment.getDescription() == null)
+              .collect(Collectors.toList());
+    } else {
+      appointments =
+          appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status));
     }
     return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
   }
+
   @Override
   public List<AppointmentResponse> getAllByWaitingForDescription(Long vetId, String status) {
     LocalDate today = LocalDate.now();
-    List<Appointment> appointments = appointmentRepository.findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status))
-            .stream().filter(appointment -> appointment.getDate().isBefore(today)
-                    && appointment.getDescription()==null).collect(Collectors.toList());
+    List<Appointment> appointments =
+        appointmentRepository
+            .findAllByVetIdAndStatus(vetId, AppointmentStatus.valueOf(status))
+            .stream()
+            .filter(
+                appointment ->
+                    appointment.getDate().isBefore(today) && appointment.getDescription() == null)
+            .collect(Collectors.toList());
     return appointmentMapper.listOfEntitiesToListOfResponses(appointments);
-//    List<Appointment> appointments = (List<Appointment>) appointmentRepository.findAll();
-//    return appointmentMapper.listOfEntitiesToListOfResponses(appointments).stream()
-//        .filter(appointmentResponse -> Objects.equals(appointmentResponse.getVet().getId(), vetId))
-//        .collect(Collectors.toList());
   }
 
   @Override
-  public List<LocalTime> getAllFreeTimeSlotsForDateAndVet(Long id, LocalDate date) {
+  public List<LocalTime> getAllFreeTimeSlotsForDateAndVet(Long id, String date, int duration) {
+    LocalDate localDate = LocalDate.parse(date);
     List<LocalTime> allTimeSlots = getAllTimeSlots();
-    List<AppointmentResponse> allAppointmentsByDateAndVetId = getAllAppointmentsByVetIdAndDate(id, date);
+    List<AppointmentResponse> allAppointmentsByDateAndVetId =
+        getAllAppointmentsByVetIdAndDate(id, localDate);
     List<TimeSlot> reservedTimeSlotsObjList = new ArrayList<>();
 
     for (AppointmentResponse appointment : allAppointmentsByDateAndVetId) {
@@ -150,7 +181,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     List<LocalTime> reservedTimes = new ArrayList<>();
-    reservedTimeSlotsObjList.forEach(element->reservedTimes.add(element.getTime()));
+    reservedTimeSlotsObjList.forEach(element -> reservedTimes.add(element.getTime()));
 
     List<LocalTime> freeTimeSlots = new ArrayList<>();
     for (LocalTime time : allTimeSlots) {
@@ -158,44 +189,47 @@ public class AppointmentServiceImpl implements AppointmentService {
         freeTimeSlots.add(time);
       }
     }
-//    int duration = 0;
-//
-//    if ("REVIEWS".equals(type) || "PREVENTIVE".equals(type)) {
-//      duration = 30;
-//    } else if ("RESEARCH".equals(type) || "DENTISTRY".equals(type)) {
-//      duration = 60;
-//    } else if ("CASTRATIONS".equals(type) || "SURGERY".equals(type)) {
-//      duration = 120;
-//    }
-   // при 30 мин се показват всички часове
-//    if(duration==60){
-      //да не запозва от 11:30 или от 17:30 - най късно 11 или 17
-//      freeTimeSlots.remove(LocalTime.parse("11:30"));
-//      freeTimeSlots.remove(LocalTime.parse("17:30"));
-      //трябва да има 2 последователни свободни
-
-//      for (LocalTime time : freeTimeSlots) {
-//        if(freeTimeSlots.contains(time.plus(30, ChronoUnit.MINUTES)) && freeTimeSlots.contains(time.plus(60, ChronoUnit.MINUTES))){
-          //ако съдържа часа+2 последователни, може да се запази
-//        }else{
-//          freeTimeSlots.remove(time);
-//        }
-//      }
-
-//    }else if(duration == 120){
-      //да не започва от 10:30 или от 16:30 - най късно 10 или 16
-//      freeTimeSlots.remove(LocalTime.parse("10:30"));
-//      freeTimeSlots.remove(LocalTime.parse("11:00"));
-//      freeTimeSlots.remove(LocalTime.parse("11:30"));
-//      freeTimeSlots.remove(LocalTime.parse("16:30"));
-//      freeTimeSlots.remove(LocalTime.parse("17:00"));
-//      freeTimeSlots.remove(LocalTime.parse("17:30"));
-      //трябва да има 4 последователни свободни
-
-
-//    }
-
+    if (duration == 60) {
+      List<LocalTime> freeTimeSlotsForLongAppointment = new ArrayList<>();
+      List<List<LocalTime>> consecutiveSeries = findConsecutiveTimeSeries(freeTimeSlots, 2);
+      for (List<LocalTime> consecutiveTimeSery : consecutiveSeries) {
+        freeTimeSlotsForLongAppointment.add(consecutiveTimeSery.get(0));
+      }
+      return freeTimeSlotsForLongAppointment;
+    } else if (duration == 120) {
+      List<LocalTime> freeTimeSlotsForLongAppointment = new ArrayList<>();
+      List<List<LocalTime>> consecutiveSeries = findConsecutiveTimeSeries(freeTimeSlots, 4);
+      for (List<LocalTime> consecutiveTimeSery : consecutiveSeries) {
+        freeTimeSlotsForLongAppointment.add(consecutiveTimeSery.get(0));
+      }
+      return freeTimeSlotsForLongAppointment;
+    }
     return freeTimeSlots;
+  }
+
+  private List<List<LocalTime>> findConsecutiveTimeSeries(List<LocalTime> times, int seriesLength) {
+    List<List<LocalTime>> consecutiveSeries = new ArrayList<>();
+    List<LocalTime> currentSeries = new ArrayList<>();
+
+    for (int i = 1; i < times.size(); i++) {
+      LocalTime current = times.get(i);
+      LocalTime previous = times.get(i - 1);
+      if (current.minusMinutes(30).equals(previous)) {
+        if (currentSeries.isEmpty()) {
+          currentSeries.add(previous);
+        }
+        currentSeries.add(current);
+
+        if (currentSeries.size() == seriesLength) {
+          consecutiveSeries.add(new ArrayList<>(currentSeries));
+          currentSeries.clear();
+        }
+      } else {
+        currentSeries.clear();
+      }
+    }
+
+    return consecutiveSeries;
   }
 
   private List<AppointmentResponse> getAllAppointmentsByVetIdAndDate(Long id, LocalDate date) {

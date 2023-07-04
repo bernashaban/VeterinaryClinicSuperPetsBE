@@ -17,6 +17,11 @@ public class UserRequest {
   private boolean active;
   private String roles;
 
+  private String speciality;
+  private String universityInfo;
+  private String photoUrl;
+  private String birthDate;
+
   public boolean isActive() {
     return active;
   }

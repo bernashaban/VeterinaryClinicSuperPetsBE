@@ -8,11 +8,12 @@ import java.util.List;
 public interface UserService {
     UserResponse getById(Long id);
 
-    Long create(UserRequest request)  throws IllegalArgumentException ;
+    Long create(UserRequest request);
+
 
     UserResponse delete(Long id);
 
-    UserResponse update(UserRequest request, Long id);
+    UserResponse update(UserRequest request, String username);
 
     List<UserResponse> getAll();
     List<UserResponse> getAllVets();

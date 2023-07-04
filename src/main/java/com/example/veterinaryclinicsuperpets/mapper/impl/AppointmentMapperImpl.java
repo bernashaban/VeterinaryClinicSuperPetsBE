@@ -3,23 +3,29 @@ package com.example.veterinaryclinicsuperpets.mapper.impl;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentRequest;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentResponse;
 import com.example.veterinaryclinicsuperpets.entity.Appointment;
+import com.example.veterinaryclinicsuperpets.entity.TimeSlot;
 import com.example.veterinaryclinicsuperpets.mapper.AppointmentMapper;
+import com.example.veterinaryclinicsuperpets.repository.TimeSlotRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AppointmentMapperImpl implements AppointmentMapper {
+  private final TimeSlotRepository timeRepository;
+
   @Override
   public AppointmentResponse entityToResponse(Appointment entity) {
-
-    //
-    //    private int duration;
-    //    private String description;
-    //    private AppointmentStatus status;
-    //    private AppointmentType type;
     AppointmentResponse appointmentResponse = new AppointmentResponse();
+    List<TimeSlot> timeSlots = timeRepository.findAllByAppointmentId(entity.getId());
+    List<String> times = new ArrayList<>();
+    for (TimeSlot timeSlot : timeSlots) {
+      times.add(timeSlot.getTime().toString());
+    }
     appointmentResponse.setId(entity.getId());
     appointmentResponse.setOwner(entity.getOwner());
     appointmentResponse.setPet(entity.getPet());
@@ -29,6 +35,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
     appointmentResponse.setStatus(entity.getStatus());
     appointmentResponse.setType(entity.getType());
     appointmentResponse.setDuration(entity.getDuration());
+    appointmentResponse.setTimes(times);
     return appointmentResponse;
   }
 

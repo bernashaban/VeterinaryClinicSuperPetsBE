@@ -19,8 +19,6 @@ import com.example.veterinaryclinicsuperpets.repository.AssistanceRepository;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {AssistanceServiceImpl.class})
 @ExtendWith(SpringExtension.class)
-class AssistanceServiceImplTest {
+class AssistanceServiceTest {
     @MockBean
     private AssistanceMapper assistanceMapper;
 
@@ -75,30 +73,6 @@ class AssistanceServiceImplTest {
         assertThrows(IllegalArgumentException.class, () -> assistanceServiceImpl.getById(123L));
         verify(assistanceRepository).findById((Long) any());
         verify(assistanceMapper).entityToResponse((Assistance) any());
-    }
-
-    /**
-     * Method under test: {@link AssistanceServiceImpl#getById(Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testGetById3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.IllegalArgumentException
-        //       at java.util.Optional.orElseThrow(Optional.java:403)
-        //       at com.example.veterinaryclinicsuperpets.service.impl.AssistanceServiceImpl.getById(AssistanceServiceImpl.java:24)
-        //   In order to prevent getById(Long)
-        //   from throwing IllegalArgumentException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   getById(Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        when(assistanceRepository.findById((Long) any())).thenReturn(Optional.empty());
-        when(assistanceMapper.entityToResponse((Assistance) any())).thenReturn(new AssistanceResponse());
-        assistanceServiceImpl.getById(123L);
     }
 
     /**
@@ -182,31 +156,6 @@ class AssistanceServiceImplTest {
     }
 
     /**
-     * Method under test: {@link AssistanceServiceImpl#delete(Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testDelete3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.IllegalArgumentException
-        //       at java.util.Optional.orElseThrow(Optional.java:403)
-        //       at com.example.veterinaryclinicsuperpets.service.impl.AssistanceServiceImpl.delete(AssistanceServiceImpl.java:37)
-        //   In order to prevent delete(Long)
-        //   from throwing IllegalArgumentException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   delete(Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        doNothing().when(assistanceRepository).delete((Assistance) any());
-        when(assistanceRepository.findById((Long) any())).thenReturn(Optional.empty());
-        when(assistanceMapper.entityToResponse((Assistance) any())).thenReturn(new AssistanceResponse());
-        assistanceServiceImpl.delete(123L);
-    }
-
-    /**
      * Method under test: {@link AssistanceServiceImpl#update(AssistanceRequest, Long)}
      */
     @Test
@@ -257,71 +206,6 @@ class AssistanceServiceImplTest {
         verify(assistanceRepository).save((Assistance) any());
         verify(assistanceRepository).findById((Long) any());
         verify(assistanceMapper).entityToResponse((Assistance) any());
-    }
-
-    /**
-     * Method under test: {@link AssistanceServiceImpl#update(AssistanceRequest, Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testUpdate3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "java.util.Optional.orElseThrow(java.util.function.Supplier)" because the return value of "com.example.veterinaryclinicsuperpets.repository.AssistanceRepository.findById(Object)" is null
-        //       at com.example.veterinaryclinicsuperpets.service.impl.AssistanceServiceImpl.update(AssistanceServiceImpl.java:45)
-        //   In order to prevent update(AssistanceRequest, Long)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   update(AssistanceRequest, Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        Assistance assistance = new Assistance();
-        assistance.setId(123L);
-        assistance.setName("Bella");
-        assistance.setPrice(10.0d);
-        assistance.setServiceType(ServiceType.REVIEWS);
-        when(assistanceRepository.save((Assistance) any())).thenReturn(assistance);
-        when(assistanceRepository.findById((Long) any())).thenReturn(null);
-        when(assistanceMapper.entityToResponse((Assistance) any())).thenReturn(new AssistanceResponse());
-        assistanceServiceImpl.update(new AssistanceRequest(), 123L);
-    }
-
-    /**
-     * Method under test: {@link AssistanceServiceImpl#update(AssistanceRequest, Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testUpdate4() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "com.example.veterinaryclinicsuperpets.dto.assistence.AssistanceRequest.getName()" because "request" is null
-        //       at com.example.veterinaryclinicsuperpets.service.impl.AssistanceServiceImpl.update(AssistanceServiceImpl.java:46)
-        //   In order to prevent update(AssistanceRequest, Long)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   update(AssistanceRequest, Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        Assistance assistance = new Assistance();
-        assistance.setId(123L);
-        assistance.setName("Bella");
-        assistance.setPrice(10.0d);
-        assistance.setServiceType(ServiceType.REVIEWS);
-        Optional<Assistance> ofResult = Optional.of(assistance);
-
-        Assistance assistance1 = new Assistance();
-        assistance1.setId(123L);
-        assistance1.setName("Bella");
-        assistance1.setPrice(10.0d);
-        assistance1.setServiceType(ServiceType.REVIEWS);
-        when(assistanceRepository.save((Assistance) any())).thenReturn(assistance1);
-        when(assistanceRepository.findById((Long) any())).thenReturn(ofResult);
-        when(assistanceMapper.entityToResponse((Assistance) any())).thenReturn(new AssistanceResponse());
-        assistanceServiceImpl.update(null, 123L);
     }
 
     /**

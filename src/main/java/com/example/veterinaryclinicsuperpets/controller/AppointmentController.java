@@ -2,12 +2,12 @@ package com.example.veterinaryclinicsuperpets.controller;
 
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentRequest;
 import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentResponse;
-import com.example.veterinaryclinicsuperpets.entity.Appointment;
-import com.example.veterinaryclinicsuperpets.entity.TimeSlot;
 import com.example.veterinaryclinicsuperpets.repository.TimeSlotRepository;
 import com.example.veterinaryclinicsuperpets.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +17,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/appointment")
@@ -29,7 +26,6 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AppointmentController {
   private final AppointmentService appointmentService;
-  private final TimeSlotRepository timeSlotRepository;
 
   @GetMapping("/{id}")
   public AppointmentResponse getAppointment(@PathVariable Long id) {
@@ -46,22 +42,9 @@ public class AppointmentController {
     return appointmentService.delete(id);
   }
 
-  @PostMapping("/{times}")
-  public Long postAppointment(@RequestBody AppointmentRequest request, @PathVariable String times) {
-    Long appointmentId = appointmentService.create(request);
-    addTimes(times, appointmentId);
-    return appointmentId;
-  }
-
-  private void addTimes(String times, Long id){
-    List<LocalTime> parsedTimes = Arrays.stream(times.split("-"))
-            .map(LocalTime::parse).collect(Collectors.toList());
-    for (LocalTime parsedTime : parsedTimes) {
-      TimeSlot timeSlot = new TimeSlot();
-      timeSlot.setTime(parsedTime);
-      timeSlot.setAppointmentId(id);
-      timeSlotRepository.save(timeSlot);
-    }
+  @PostMapping()
+  public Long postAppointment(@RequestBody AppointmentRequest request) {
+    return appointmentService.create(request);
   }
 
   @PutMapping(value = "/{id}")
@@ -69,30 +52,37 @@ public class AppointmentController {
       @RequestBody AppointmentRequest request, @PathVariable Long id) {
     return appointmentService.update(request, id);
   }
+
   @PutMapping(value = "add-description/{id}")
+  @PreAuthorize("hasAuthority('ROLE_VET')")
   public AppointmentResponse addDescription(
-          @RequestBody String description, @PathVariable Long id) {
+      @RequestBody String description, @PathVariable Long id) {
     return appointmentService.addDescription(description, id);
   }
 
-  @GetMapping("/{vetId}/{date}")
-  public List<LocalTime> getAllFreeTimes(@PathVariable Long vetId,
-                                         @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-    return appointmentService.getAllFreeTimeSlotsForDateAndVet(vetId, date);
+  @GetMapping("/{vetId}/{date}/{duration}")
+  public List<LocalTime> getAllFreeTimes(
+      @PathVariable Long vetId,
+      @PathVariable int duration,
+      @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String date) {
+    return appointmentService.getAllFreeTimeSlotsForDateAndVet(vetId, date, duration);
   }
 
   @GetMapping("owner/{id}/{status}")
-  public List<AppointmentResponse> getAllAppointmentForOwner(@PathVariable Long id,@PathVariable String status) {
+  public List<AppointmentResponse> getAllAppointmentForOwner(
+      @PathVariable Long id, @PathVariable String status) {
     return appointmentService.getAllByOwner(id, status);
   }
 
   @GetMapping("/vet/{id}/{status}")
-  public List<AppointmentResponse> getAllAppointmentForVet(@PathVariable Long id,@PathVariable String status) {
-    return appointmentService.getAllByVet(id,status);
+  public List<AppointmentResponse> getAllAppointmentForVet(
+      @PathVariable Long id, @PathVariable String status) {
+    return appointmentService.getAllByVet(id, status);
   }
 
   @GetMapping("/vet/waiting/{id}/{status}")
-  public List<AppointmentResponse> getAllAppointmentForVetCondition(@PathVariable Long id,@PathVariable String status) {
-    return appointmentService.getAllByWaitingForDescription(id,status);
+  public List<AppointmentResponse> getAllAppointmentForVetCondition(
+      @PathVariable Long id, @PathVariable String status) {
+    return appointmentService.getAllByWaitingForDescription(id, status);
   }
 }

@@ -3,7 +3,8 @@ package com.example.veterinaryclinicsuperpets.dto.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +22,5 @@ public class UserResponse {
   private String roles;
   private String speciality;
   private String universityInfo;
-  private Date birthDate;
+  private LocalDate birthDate;
 }

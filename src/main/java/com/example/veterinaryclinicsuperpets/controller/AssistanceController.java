@@ -4,6 +4,8 @@ import com.example.veterinaryclinicsuperpets.dto.assistence.AssistanceRequest;
 import com.example.veterinaryclinicsuperpets.dto.assistence.AssistanceResponse;
 import com.example.veterinaryclinicsuperpets.service.AssistanceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,16 +36,22 @@ public class AssistanceController {
   }
 
   @DeleteMapping("/{id}")
+  @Secured("ROLE_ADMIN")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
   public AssistanceResponse deleteAssistance(@PathVariable Long id) {
     return assistanceService.delete(id);
   }
 
   @PostMapping()
+  @Secured("ROLE_ADMIN")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
   public Long postAssistance(@RequestBody AssistanceRequest request) {
     return assistanceService.create(request);
   }
 
   @PutMapping( "/{id}")
+  @Secured("ROLE_ADMIN")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
   public AssistanceResponse updateAssistance(
       @RequestBody AssistanceRequest request, @PathVariable Long id) {
     return assistanceService.update(request, id);

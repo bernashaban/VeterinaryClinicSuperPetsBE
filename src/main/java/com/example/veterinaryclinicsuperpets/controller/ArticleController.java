@@ -5,6 +5,8 @@ import com.example.veterinaryclinicsuperpets.dto.article.ArticleResponse;
 import com.example.veterinaryclinicsuperpets.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,15 +37,21 @@ public class ArticleController {
   }
 
   @DeleteMapping("/{id}")
+  @Secured("ROLE_ADMIN")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
   public ArticleResponse deleteArticle(@PathVariable Long id) {
     return articleService.delete(id);
   }
   @PostMapping()
+  @Secured("ROLE_ADMIN")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
   public Long postArticle(@RequestBody ArticleRequest request) {
     return articleService.create(request);
   }
 
   @PutMapping(value = "/{id}")
+  @Secured("ROLE_ADMIN")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
   public ArticleResponse updateArticle(@RequestBody ArticleRequest request, @PathVariable Long id) {
     return articleService.update(request, id);
   }

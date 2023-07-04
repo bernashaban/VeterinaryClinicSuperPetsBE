@@ -2,7 +2,6 @@ package com.example.veterinaryclinicsuperpets.security;
 
 import com.example.veterinaryclinicsuperpets.entity.User;
 import com.example.veterinaryclinicsuperpets.repository.UserRepository;
-import com.example.veterinaryclinicsuperpets.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

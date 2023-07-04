@@ -1,10 +1,12 @@
 package com.example.veterinaryclinicsuperpets.service.impl;
 
+import com.example.veterinaryclinicsuperpets.dto.appointment.AppointmentResponse;
 import com.example.veterinaryclinicsuperpets.dto.pet.PetRequest;
 import com.example.veterinaryclinicsuperpets.dto.pet.PetResponse;
 import com.example.veterinaryclinicsuperpets.entity.Pet;
 import com.example.veterinaryclinicsuperpets.mapper.PetMapper;
 import com.example.veterinaryclinicsuperpets.repository.PetRepository;
+import com.example.veterinaryclinicsuperpets.service.AppointmentService;
 import com.example.veterinaryclinicsuperpets.service.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class PetServiceImpl implements PetService {
   private final PetRepository petRepository;
   private final PetMapper petMapper;
+  private final AppointmentService appointmentService;
 
   @Override
   public PetResponse getById(Long id) {
@@ -33,6 +36,8 @@ public class PetServiceImpl implements PetService {
   @Override
   public PetResponse delete(Long id) {
     Pet pet = petRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    List<AppointmentResponse> petAppointments = appointmentService.getAllByPet(id);
+    appointmentService.deleteAll(petAppointments);
     petRepository.delete(pet);
     return petMapper.entityToResponse(pet);
   }
@@ -65,7 +70,10 @@ public class PetServiceImpl implements PetService {
   @Override
   public List<PetResponse> getAllByOwner(Long ownerId) {
     List<Pet> pets = (List<Pet>) petRepository.findAll();
-    List<Pet> filtered = pets.stream().filter(pet -> pet.getOwner().getId().equals(ownerId)).collect(Collectors.toList());
+    List<Pet> filtered =
+        pets.stream()
+            .filter(pet -> pet.getOwner().getId().equals(ownerId))
+            .collect(Collectors.toList());
     return petMapper.listOfEntitiesToListOfResponses(filtered);
   }
 }

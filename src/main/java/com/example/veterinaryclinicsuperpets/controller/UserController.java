@@ -29,27 +29,23 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     private UserRepository repository;
-
     @Autowired
     private UserServiceImpl service;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @PostMapping()
-    public String joinGroup(@RequestBody User user) {
+    public Long joinGroup(@RequestBody User user) {
         user.setRoles(UserConstant.DEFAULT_ROLE);//owner
         user.setActive(true);
         String encryptedPwd = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPwd);
         repository.save(user);
-        return "Hi " + user.getUsername() + " welcome to group !";
+        return user.getId();
     }
 
-    //If loggedin user is ADMIN -> ADMIN OR VET
-    //If loggedin user is VET -> VET
-
     @GetMapping("/access/{userId}/{userRole}")
-    //@Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_VET')")
     public String giveAccessToUser(@PathVariable Long userId, @PathVariable String userRole, Principal principal) {
         User user = repository.findById(userId).get();
@@ -60,7 +56,7 @@ public class UserController {
             user.setRoles(newRole);
         }
         repository.save(user);
-        return "Hi " + user.getUsername() + " New Role assign to you by " + principal.getName();
+        return user.getUsername() + " New Role assign by " + principal.getName();
     }
 
     @GetMapping
@@ -68,12 +64,6 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<User> loadUsers() {
         return repository.findAll();
-    }
-
-    @GetMapping("/test")
-    @PreAuthorize("hasAuthority('ROLE_OWNER')")
-    public String testUserAccess() {
-        return "user can only access this !";
     }
 
     private List<String> getRolesByLoggedInUser(Principal principal) {

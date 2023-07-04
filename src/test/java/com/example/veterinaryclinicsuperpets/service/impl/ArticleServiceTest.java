@@ -18,8 +18,6 @@ import com.example.veterinaryclinicsuperpets.repository.ArticleRepository;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {ArticleServiceImpl.class})
 @ExtendWith(SpringExtension.class)
-class ArticleServiceImplTest {
+class ArticleServiceTest {
     @MockBean
     private ArticleMapper articleMapper;
 
@@ -72,30 +70,6 @@ class ArticleServiceImplTest {
         assertThrows(IllegalArgumentException.class, () -> articleServiceImpl.getById(123L));
         verify(articleRepository).findById((Long) any());
         verify(articleMapper).entityToResponse((Article) any());
-    }
-
-    /**
-     * Method under test: {@link ArticleServiceImpl#getById(Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testGetById3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.IllegalArgumentException
-        //       at java.util.Optional.orElseThrow(Optional.java:403)
-        //       at com.example.veterinaryclinicsuperpets.service.impl.ArticleServiceImpl.getById(ArticleServiceImpl.java:22)
-        //   In order to prevent getById(Long)
-        //   from throwing IllegalArgumentException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   getById(Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        when(articleRepository.findById((Long) any())).thenReturn(Optional.empty());
-        when(articleMapper.entityToResponse((Article) any())).thenReturn(new ArticleResponse());
-        articleServiceImpl.getById(123L);
     }
 
     /**
@@ -173,31 +147,6 @@ class ArticleServiceImplTest {
         verify(articleRepository).findById((Long) any());
         verify(articleRepository).delete((Article) any());
         verify(articleMapper).entityToResponse((Article) any());
-    }
-
-    /**
-     * Method under test: {@link ArticleServiceImpl#delete(Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testDelete3() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.IllegalArgumentException
-        //       at java.util.Optional.orElseThrow(Optional.java:403)
-        //       at com.example.veterinaryclinicsuperpets.service.impl.ArticleServiceImpl.delete(ArticleServiceImpl.java:34)
-        //   In order to prevent delete(Long)
-        //   from throwing IllegalArgumentException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   delete(Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        doNothing().when(articleRepository).delete((Article) any());
-        when(articleRepository.findById((Long) any())).thenReturn(Optional.empty());
-        when(articleMapper.entityToResponse((Article) any())).thenReturn(new ArticleResponse());
-        articleServiceImpl.delete(123L);
     }
 
     /**
@@ -328,44 +277,6 @@ class ArticleServiceImplTest {
      * Method under test: {@link ArticleServiceImpl#update(ArticleRequest, Long)}
      */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testUpdate5() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.IllegalArgumentException
-        //       at java.util.Optional.orElseThrow(Optional.java:403)
-        //       at com.example.veterinaryclinicsuperpets.service.impl.ArticleServiceImpl.update(ArticleServiceImpl.java:41)
-        //   In order to prevent update(ArticleRequest, Long)
-        //   from throwing IllegalArgumentException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   update(ArticleRequest, Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        Article article = new Article();
-        article.setDescription("The characteristics of someone or something");
-        article.setId(123L);
-        article.setTitle("Dr");
-        when(articleRepository.save((Article) any())).thenReturn(article);
-        when(articleRepository.findById((Long) any())).thenReturn(Optional.empty());
-        Article article1 = mock(Article.class);
-        when(article1.getDescription()).thenReturn("The characteristics of someone or something");
-        when(article1.getTitle()).thenReturn("Dr");
-        doNothing().when(article1).setDescription((String) any());
-        doNothing().when(article1).setId((Long) any());
-        doNothing().when(article1).setTitle((String) any());
-        article1.setDescription("The characteristics of someone or something");
-        article1.setId(123L);
-        article1.setTitle("Dr");
-        when(articleMapper.entityToResponse((Article) any())).thenReturn(new ArticleResponse());
-        articleServiceImpl.update(new ArticleRequest("Dr", "The characteristics of someone or something"), 123L);
-    }
-
-    /**
-     * Method under test: {@link ArticleServiceImpl#update(ArticleRequest, Long)}
-     */
-    @Test
     void testUpdate6() {
         Article article = mock(Article.class);
         when(article.getDescription()).thenReturn("The characteristics of someone or something");
@@ -393,45 +304,6 @@ class ArticleServiceImplTest {
         verify(article).setId((Long) any());
         verify(article).setTitle((String) any());
         verify(articleMapper).entityToResponse((Article) any());
-    }
-
-    /**
-     * Method under test: {@link ArticleServiceImpl#update(ArticleRequest, Long)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testUpdate7() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException: Cannot invoke "com.example.veterinaryclinicsuperpets.dto.article.ArticleRequest.getDescription()" because "request" is null
-        //       at com.example.veterinaryclinicsuperpets.service.impl.ArticleServiceImpl.update(ArticleServiceImpl.java:42)
-        //   In order to prevent update(ArticleRequest, Long)
-        //   from throwing NullPointerException, add constructors or factory
-        //   methods that make it easier to construct fully initialized objects used in
-        //   update(ArticleRequest, Long).
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        Article article = mock(Article.class);
-        when(article.getDescription()).thenReturn("The characteristics of someone or something");
-        when(article.getTitle()).thenReturn("Dr");
-        doNothing().when(article).setDescription((String) any());
-        doNothing().when(article).setId((Long) any());
-        doNothing().when(article).setTitle((String) any());
-        article.setDescription("The characteristics of someone or something");
-        article.setId(123L);
-        article.setTitle("Dr");
-        Optional<Article> ofResult = Optional.of(article);
-
-        Article article1 = new Article();
-        article1.setDescription("The characteristics of someone or something");
-        article1.setId(123L);
-        article1.setTitle("Dr");
-        when(articleRepository.save((Article) any())).thenReturn(article1);
-        when(articleRepository.findById((Long) any())).thenReturn(ofResult);
-        when(articleMapper.entityToResponse((Article) any())).thenReturn(new ArticleResponse());
-        articleServiceImpl.update(null, 123L);
     }
 
     /**

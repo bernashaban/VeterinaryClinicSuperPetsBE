@@ -1,4 +1,4 @@
-package com.example.veterinaryclinicsuperpets.dto;
+package com.example.veterinaryclinicsuperpets.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
